@@ -4,7 +4,7 @@
 
 #include "PageLoader.hpp"
 
-Page PageLoader::load(const std::string &url) {
+Page PageLoader::load(const std::string& url) {
     curlpp::Easy request; // for sending a request into given url
     curlpp::Cleanup cleaner; // will clean up when destructor has been called
 

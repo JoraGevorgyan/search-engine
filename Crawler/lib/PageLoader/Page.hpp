@@ -2,8 +2,8 @@
 // Created by jora on 3/12/21.
 //
 
-#ifndef SEARCH_PAGE_HPP
-#define SEARCH_PAGE_HPP
+#ifndef SEARCH_ENGINE_PAGE_HPP
+#define SEARCH_ENGINE_PAGE_HPP
 
 #include <string>
 
@@ -20,4 +20,4 @@ public:
     int getStatus() const;
 };
 
-#endif //SEARCH_PAGE_HPP
+#endif //SEARCH_ENGINE_PAGE_HPP

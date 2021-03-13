@@ -4,7 +4,7 @@
 
 #include "Page.hpp"
 
-Page::Page(const std::string &effUrl, const std::string &data, int status)
+Page::Page(const std::string& effUrl, const std::string& data, int status)
     :effUrl(effUrl)
     ,data(data)
     ,status(status)
