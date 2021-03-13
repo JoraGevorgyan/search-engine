@@ -32,10 +32,10 @@
 *.app                                                                                                                        
                                                                                                                              
 # Hidden files                                                                                                               
-*/.*                                                                                                                          
+.*                                                                                                                          
                                                                                                                              
 # Other directories                                                                                                          
-*/cmake-build-debug/                                  
-*/build/
-*/bin/
+cmake-build-debug/                                  
+build/
+bin/
 
