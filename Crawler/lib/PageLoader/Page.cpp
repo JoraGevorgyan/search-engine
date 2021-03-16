@@ -12,7 +12,7 @@ Page::Page(const std::string& effUrl, const std::string& data, int status)
 
 }
 
-const std::string& Page::getUrl() const {
+const std::string& Page::getUrl() const { // effective
     return this->effUrl;
 }
 

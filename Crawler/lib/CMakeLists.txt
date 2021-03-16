@@ -1,2 +1,4 @@
 add_subdirectory(PageLoader)
 add_subdirectory(Parser)
+add_subdirectory(LinkEntryRepository)
+add_subdirectory(WebsiteRepository)

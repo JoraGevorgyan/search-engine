@@ -32,7 +32,7 @@ public:
 
 private:
     std::string getDomain(const std::string& url);
-    void extractUrls(GumboNode* node);
+    void extractUrls(GumboNode* node, const std::string& domain);
     bool isAbsUrl(const std::string& url) const;
 };
 

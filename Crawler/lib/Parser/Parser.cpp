@@ -4,25 +4,27 @@
 
 #include "Parser.hpp"
 
-Parser::Parser(const std::string& html, const std::string& rootUrl) : html(html), rootUrl(rootUrl) {
+Parser::Parser(const std::string& html, const std::string& rootUrl) : html(html), rootUrl(rootUrl) { //
 
 }
 
 void Parser::parse() {
     // extracting urls
-    this->domain = this->getDomain(this->rootUrl);
+    auto domain = this->getDomain(this->rootUrl);
     GumboOutput* output = gumbo_parse(html.c_str());
     if(output == nullptr) {
         return;
     }
-    this->extractUrls(output->root);
-    gumbo_destroy_output(&kGumboDefaultOptions, output);
+    this->extractUrls(output->root, domain);
 
-    //
+    // extracting a title
+
+
+    gumbo_destroy_output(&kGumboDefaultOptions, output);
 }
 
 
-void Parser::extractUrls(GumboNode* node) {
+void Parser::extractUrls(GumboNode* node, const std::string& domain) {
     if(node->type != GUMBO_NODE_ELEMENT) {
         return;
     }
@@ -30,7 +32,7 @@ void Parser::extractUrls(GumboNode* node) {
     if(node->v.element.tag != GUMBO_TAG_A) {
         GumboVector* children = &node->v.element.children;
         for(size_t i = 0; i < children->length; ++i) {
-            this->extractUrls(static_cast<GumboNode*>(children->data[i]));
+            this->extractUrls(static_cast<GumboNode*>(children->data[i]), domain);
         }
         return;
     }
@@ -48,6 +50,14 @@ void Parser::extractUrls(GumboNode* node) {
         this->urls.push_back(curUrl);
         return;
     }
+
+    // https://domain/
+    // rau.am/a/b/x + y = rau.am/a/b/y
+    // rau.am/a/b/x/ + y = rau.am/a/b/x/y
+    // rau.am/a/b/c/x + /z = rau.am/z
+    // if started at '#' => skip
+
+
 
     this->urls.push_back(this->domain + curUrl);
 }

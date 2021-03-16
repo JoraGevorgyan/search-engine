@@ -5,19 +5,26 @@
 #include "PageLoader.hpp"
 
 Page PageLoader::load(const std::string& url) {
-    curlpp::Easy request; // for sending a request into given url
-    curlpp::Cleanup cleaner; // will clean up when destructor has been called
+    // for sending a request into given url
+    curlpp::Easy request;
+    // will clean up when destructor has been called
+    curlpp::Cleanup cleaner;
 
     request.setOpt(curlpp::Options::Url(url));
-    request.setOpt(curlpp::Options::FollowLocation(true)); // trying to find correct location
+    // try to find correct location
+    request.setOpt(curlpp::Options::FollowLocation(true));
 
-    std::ostringstream os; // for saving info in this stream
-    curlpp::options::WriteStream ws(&os); // make option for writing into 'os' stream
-    request.setOpt(ws); // change default write stream as 'os'
+    // for saving info in this stream
+    std::ostringstream os;
+    // make option for writing into 'os' stream
+    curlpp::options::WriteStream ws(&os);
+    // change default write stream as 'os'
+    request.setOpt(ws);
     request.perform();
 
     std::string effUrl;
-    curlpp::infos::EffectiveUrl::get(request, effUrl); // write found effective url into effectiveurl
+    // write founded effective url into effective url
+    curlpp::infos::EffectiveUrl::get(request, effUrl);
 
     return Page(effUrl, os.str(), curlpp::infos::ResponseCode::get(request));
 }
