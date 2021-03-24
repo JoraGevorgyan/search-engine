@@ -4,7 +4,7 @@
 
 #include "Parser.hpp"
 
-Parser::Parser(const std::string& html, const std::string& rootUrl) : html(html), rootUrl(rootUrl) { //
+Parser::Parser(const std::string& html, const std::string& rootUrl) : html(html), rootUrl(rootUrl) {
 
 }
 
@@ -18,11 +18,32 @@ void Parser::parse() {
     this->extractUrls(output->root, domain);
 
     // extracting a title
+    this->extractTitle(output->root);
+
+    // extracting description
 
 
     gumbo_destroy_output(&kGumboDefaultOptions, output);
 }
 
+
+void Parser::extractTitle(GumboNode* node) {
+    if(node->type != GUMBO_NODE_ELEMENT) {
+        return;
+    }
+
+    GumboVector* children = &node->v.element.children;
+
+    if(node->v.element.tag == GUMBO_TAG_TITLE && children->length != 0) {
+        this->title = std::string(static_cast<GumboNode*>(children->data[0])->v.text.text);
+        // this->title = std::string(node->v.element.original_tag.data);
+        return;
+    }
+
+    for(size_t i = 0; i < children->length; ++i) {
+        this->extractTitle(static_cast<GumboNode*>(children->data[i]));
+    }
+}
 
 void Parser::extractUrls(GumboNode* node, const std::string& domain) {
     if(node->type != GUMBO_NODE_ELEMENT) {
@@ -37,7 +58,7 @@ void Parser::extractUrls(GumboNode* node, const std::string& domain) {
         return;
     }
     GumboAttribute* href = gumbo_get_attribute(&node->v.element.attributes, "href");
-    if(href->value == nullptr) {
+    if(href == nullptr || href->value == nullptr) {
         return;
     }
     std::string curUrl = std::string(href->value);

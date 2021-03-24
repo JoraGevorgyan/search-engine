@@ -5,7 +5,7 @@
 #include "gtest/gtest.h"
 #include <iostream>
 #include <string>
-#include "../lib/PageLoader/PageLoader.hpp"
+#include "PageLoader.hpp"
 
 TEST(loadingTest, test1) {
     EXPECT_EQ("ping", "ping");
