@@ -9,7 +9,7 @@
 int main() {
     PageLoader pageLoader;
     Page rau = pageLoader.load("rau.am");
-    Parser parser(rau.getData(), rau.getUrl());
+    Parser parser(rau.getData(), rau.getEffUrl());
 
     parser.parse();
 

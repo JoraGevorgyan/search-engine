@@ -8,7 +8,6 @@
 #include <string>
 #include <sstream>
 #include <curlpp/cURLpp.hpp>
-#include <curlpp/internal/CurlHandle.hpp>
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
 #include <curlpp/Infos.hpp>

@@ -7,6 +7,7 @@
 Page PageLoader::load(const std::string& url) {
     // for sending a request into given url
     curlpp::Easy request;
+
     // will clean up when destructor has been called
     curlpp::Cleanup cleaner;
 
@@ -23,7 +24,7 @@ Page PageLoader::load(const std::string& url) {
     request.perform();
 
     std::string effUrl;
-    // write founded effective url into effective url
+    // write found effective url into effective url
     curlpp::infos::EffectiveUrl::get(request, effUrl);
 
     return Page(effUrl, os.str(), curlpp::infos::ResponseCode::get(request));
