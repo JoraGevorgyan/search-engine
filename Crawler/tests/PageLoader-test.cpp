@@ -3,8 +3,8 @@
 //
 
 #include <string>
+#include <gtest/gtest.h>
 #include "PageLoader.hpp"
-#include "gtest/gtest.h"
 
 TEST(loadingTest, test1) {
     const std::string url = "cplusplus.com";

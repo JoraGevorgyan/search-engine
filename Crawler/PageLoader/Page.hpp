@@ -14,7 +14,7 @@ private:
     int status;
 
 public:
-    Page(const std::string& effUrl, const std::string& data, int status);
+    Page(std::string effUrl, std::string data, int status);
     const std::string& getEffUrl() const;
     const std::string& getData() const;
     int getStatus() const;

@@ -10,4 +10,8 @@ add_executable(${BINARY} ${TEST_SOURCES})
 add_test(NAME ${BINARY} COMMAND ${BINARY})
 
 include_directories(${INCLUDE_DIR})
-target_link_libraries(${BINARY} PUBLIC ${CMAKE_PROJECT_NAME}_loader gtest pthread)
+target_link_libraries(
+        ${BINARY} PUBLIC
+        ${CMAKE_PROJECT_NAME}_loader
+        ${CMAKE_PROJECT_NAME}_parser
+        gtest pthread)

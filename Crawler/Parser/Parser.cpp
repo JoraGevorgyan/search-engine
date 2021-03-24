@@ -4,109 +4,122 @@
 
 #include "Parser.hpp"
 
-Parser::Parser(const std::string& html, const std::string& rootUrl) : html(html), rootUrl(rootUrl) {
-
+Parser::Parser(std::string html, std::string startingUrl)
+    : html{std::move(html)}
+    , startingUrl{std::move(startingUrl)} {
 }
 
-void Parser::parse() {
-    // extracting urls
-    auto domain = this->getDomain(this->rootUrl);
-    GumboOutput* output = gumbo_parse(html.c_str());
-    if(output == nullptr) {
-        return;
+int Parser::parse() {
+    GumboOutput *output = gumbo_parse(html.c_str());
+    if (output == nullptr) {
+        return errno;
     }
-    this->extractUrls(output->root, domain);
+
+    // extracting urls
+    std::string homeUrl = this->getHomeUrl(this->startingUrl);
+    int err = this->extractUrls(output->root, homeUrl);
+    if (err != 0) {
+        return err;
+    }
 
     // extracting a title
-    this->extractTitle(output->root);
-
+    err = this->extractTitle(output->root);
+    if(err != 0) {
+        return err;
+    }
     // extracting description
 
 
+    // clean up
     gumbo_destroy_output(&kGumboDefaultOptions, output);
+
+    return 0;
 }
 
 
-void Parser::extractTitle(GumboNode* node) {
+int Parser::extractTitle(GumboNode* node) {
     if(node->type != GUMBO_NODE_ELEMENT) {
-        return;
+        return -1;
     }
 
     GumboVector* children = &node->v.element.children;
 
     if(node->v.element.tag == GUMBO_TAG_TITLE && children->length != 0) {
         this->title = std::string(static_cast<GumboNode*>(children->data[0])->v.text.text);
-        // this->title = std::string(node->v.element.original_tag.data);
-        return;
+        return 0;
     }
 
     for(size_t i = 0; i < children->length; ++i) {
         this->extractTitle(static_cast<GumboNode*>(children->data[i]));
     }
+    return 0;
 }
 
-void Parser::extractUrls(GumboNode* node, const std::string& domain) {
+int Parser::extractUrls(GumboNode* node, const std::string& homeUrl) {
     if(node->type != GUMBO_NODE_ELEMENT) {
-        return;
+        return -1;
     }
-
     if(node->v.element.tag != GUMBO_TAG_A) {
         GumboVector* children = &node->v.element.children;
         for(size_t i = 0; i < children->length; ++i) {
-            this->extractUrls(static_cast<GumboNode*>(children->data[i]), domain);
+            this->extractUrls(static_cast<GumboNode*>(children->data[i]), homeUrl);
         }
-        return;
+        return 0;
     }
+
     GumboAttribute* href = gumbo_get_attribute(&node->v.element.attributes, "href");
     if(href == nullptr || href->value == nullptr) {
-        return;
+        return -1;
     }
     std::string curUrl = std::string(href->value);
+    std::string curHomeUrl = this->getHomeUrl(curUrl);
 
-    if(this->isAbsUrl(curUrl)) { // is outside from our page or contains our domain
-        std::string curDomain = this->getDomain(curUrl);
-        if(curDomain != this->domain) {
-            return;
-        }
-        this->urls.push_back(curUrl);
-        return;
+    // skip if out of current webiste or started at '#'
+    if(!curHomeUrl.empty() && curHomeUrl != homeUrl || curUrl.front() == '#' || curUrl.empty()) {
+        return 0;
     }
 
-    // https://domain/
-    // rau.am/a/b/x + y = rau.am/a/b/y
-    // rau.am/a/b/x/ + y = rau.am/a/b/x/y
-    // rau.am/a/b/c/x + /z = rau.am/z
-    // if started at '#' => skip
-
-
-
-    this->urls.push_back(this->domain + curUrl);
+    if(curHomeUrl == homeUrl) {
+        this->urls.push_back(curUrl);
+    }
+    else {
+        this->urls.push_back(this->addPath(homeUrl, curUrl));
+    }
+    return 0;
 }
 
-std::string Parser::getDomain(const std::string& url) {
+std::string Parser::getHomeUrl(const std::string& url) const {
     size_t breakIndex = 1;
     for(size_t i = 1; i < url.size(); ++i, ++breakIndex) {
         if(url[i] == '/' && url[i - 1] == '/') {
             break;
         }
     }
-    while(url[++breakIndex] != '/');
+    if(breakIndex == 1) {
+        return std::string("");
+    }
+    while(breakIndex < url.size() && url[++breakIndex] != '/');
 
     return std::string(url, 0, breakIndex);
 }
 
-bool Parser::isAbsUrl(const std::string& url) const {
-    if(url.size() == 1) {
-        return false;
-    }
-
-    if(url[0] == '/' && url[1] == '/'
-            || std::string(url, 0, 7) == "http://"
-            || std::string(url, 0, 8) == "https://") {
-        return true;
-    }
-
-    return false;
+std::string Parser::addPath(const std::string& homeUrl, const std::string& path) const {
+   if(path.empty()) {
+       exit(1);
+   }
+   if(path.front() == '/') {
+       return homeUrl + path;
+   }
+   // erase last part from starting url for getting current page url and add path on it
+    size_t index = 0;
+   for(index = this->startingUrl.size() - 1; index != 0 && this->startingUrl[index] != '/'; --index);
+   // starting url was invalid
+   if(index == 0) {
+       exit(1);
+   }
+   auto it = this->startingUrl.begin();
+   std::string currentPage(it, it + index + 1);
+   return currentPage + path;
 }
 
 const std::vector<std::string>& Parser::getUrls() const {

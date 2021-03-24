@@ -11,9 +11,18 @@ int main() {
     Page rau = pageLoader.load("rau.am");
     Parser parser(rau.getData(), rau.getEffUrl());
 
-    parser.parse();
-
+    int err = parser.parse();
+    if(err != 0) {
+        return err;
+    }
     std::cout << parser.getTitle() << std::endl;
+
+    auto urls = parser.getUrls();
+
+    for(auto cur : urls) {
+        std::cout << cur << std::endl;
+    }
+    std::cout << std::endl;
 
     return 0;
 }

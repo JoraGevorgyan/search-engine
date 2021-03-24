@@ -6,7 +6,7 @@
 #define SEARCH_ENGINE_PARSER_HPP
 
 #include <gumbo.h>
-#include <iostream>
+#include <cerrno>
 #include <string>
 #include <vector>
 
@@ -18,24 +18,22 @@ private:
     std::string content;
 
     std::string html;
-    std::string rootUrl;
-    std::string domain;
+    std::string startingUrl;
 
 public:
-    Parser(const std::string& html, const std::string& rootUrl);
+    Parser(std::string html, std::string startingUrl);
 
-    void parse();
+    int parse();
     const std::vector<std::string>& getUrls() const;
     const std::string& getTitle() const;
     const std::string& getDescription() const;
     const std::string& getContent() const;
 
 private:
-    std::string getDomain(const std::string& url);
-    void extractUrls(GumboNode* node, const std::string& domain);
-    bool isAbsUrl(const std::string& url) const;
-    void extractTitle(GumboNode* node);
+    int extractUrls(GumboNode* node, const std::string& homeUrl);
+    int extractTitle(GumboNode* node);
+    std::string getHomeUrl(const std::string& url) const;
+    std::string addPath(const std::string& homeUrl, const std::string& path) const;
 };
-
 
 #endif //SEARCH_ENGINE_PARSER_HPP
