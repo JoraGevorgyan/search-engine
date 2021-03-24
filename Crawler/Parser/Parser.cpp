@@ -14,44 +14,25 @@ int Parser::parse() {
     if (output == nullptr) {
         return errno;
     }
-
     // extracting urls
     std::string homeUrl = this->getHomeUrl(this->startingUrl);
     int err = this->extractUrls(output->root, homeUrl);
     if (err != 0) {
         return err;
     }
-
     // extracting a title
     err = this->extractTitle(output->root);
     if(err != 0) {
         return err;
     }
     // extracting description
-
-
+    err = this->extractDscrpt(output->root);
+    if(err != 0) {
+        return err;
+    }
     // clean up
     gumbo_destroy_output(&kGumboDefaultOptions, output);
 
-    return 0;
-}
-
-
-int Parser::extractTitle(GumboNode* node) {
-    if(node->type != GUMBO_NODE_ELEMENT) {
-        return -1;
-    }
-
-    GumboVector* children = &node->v.element.children;
-
-    if(node->v.element.tag == GUMBO_TAG_TITLE && children->length != 0) {
-        this->title = std::string(static_cast<GumboNode*>(children->data[0])->v.text.text);
-        return 0;
-    }
-
-    for(size_t i = 0; i < children->length; ++i) {
-        this->extractTitle(static_cast<GumboNode*>(children->data[i]));
-    }
     return 0;
 }
 
@@ -59,6 +40,7 @@ int Parser::extractUrls(GumboNode* node, const std::string& homeUrl) {
     if(node->type != GUMBO_NODE_ELEMENT) {
         return -1;
     }
+
     if(node->v.element.tag != GUMBO_TAG_A) {
         GumboVector* children = &node->v.element.children;
         for(size_t i = 0; i < children->length; ++i) {
@@ -84,6 +66,23 @@ int Parser::extractUrls(GumboNode* node, const std::string& homeUrl) {
     }
     else {
         this->urls.push_back(this->addPath(homeUrl, curUrl));
+    }
+    return 0;
+}
+
+int Parser::extractTitle(GumboNode* node) {
+    if(node->type != GUMBO_NODE_ELEMENT) {
+        return -1;
+    }
+    GumboVector* children = &node->v.element.children;
+
+    if(node->v.element.tag == GUMBO_TAG_TITLE && children->length != 0) {
+        this->title = std::string(static_cast<GumboNode*>(children->data[0])->v.text.text);
+        return 0;
+    }
+
+    for(size_t i = 0; i < children->length; ++i) {
+        this->extractTitle(static_cast<GumboNode*>(children->data[i]));
     }
     return 0;
 }
@@ -120,6 +119,31 @@ std::string Parser::addPath(const std::string& homeUrl, const std::string& path)
    auto it = this->startingUrl.begin();
    std::string currentPage(it, it + index + 1);
    return currentPage + path;
+}
+
+int Parser::extractDscrpt(GumboNode* node) {
+    if(node->type != GUMBO_NODE_ELEMENT) {
+        return -1;
+    }
+    // if is not a meta tag, than search it in others
+    if(node->v.element.tag != GUMBO_TAG_META) {
+        GumboVector* children = &node->v.element.children;
+        for(size_t i = 0; i < children->length; ++i) {
+            this->extractDscrpt(static_cast<GumboNode*>(children->data[i]));
+        }
+    }
+    // if the tag type is meta, than take from it description  and return
+    GumboAttribute* name = gumbo_get_attribute(&node->v.element.attributes, "name");
+    if(name == nullptr || name->value == nullptr || std::string(name->value) != "description") {
+        return 0;
+    }
+
+    GumboAttribute* cont = gumbo_get_attribute(&node->v.element.attributes, "content");
+    if(cont == nullptr || cont->value == nullptr) {
+        return -1;
+    }
+    this->description = std::string(cont->value);
+    return 0;
 }
 
 const std::vector<std::string>& Parser::getUrls() const {

@@ -32,6 +32,7 @@ public:
 private:
     int extractUrls(GumboNode* node, const std::string& homeUrl);
     int extractTitle(GumboNode* node);
+    int extractDscrpt(GumboNode* node);
     std::string getHomeUrl(const std::string& url) const;
     std::string addPath(const std::string& homeUrl, const std::string& path) const;
 };
