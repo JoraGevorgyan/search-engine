@@ -5,17 +5,18 @@
 #ifndef CRAWLER_WEBSITE_HPP
 #define CRAWLER_WEBSITE_HPP
 
+#include <ctime>
 #include <string>
 
 class Website {
 private:
-    int id;
+    size_t id;
     std::string domain;
     std::string homepage;
     time_t lastCrawledTime;
 
 public:
-    Website()
+    Website();
 };
 
 

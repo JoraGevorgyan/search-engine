@@ -6,8 +6,8 @@ set(CMAKE_CXX_STANDARD 14)
 add_subdirectory(Crawler)
 add_subdirectory(PageLoader)
 add_subdirectory(Parser)
-# add_subdirectory(LinkEntryRepository)
-# add_subdirectory(WebsiteRepository)
+add_subdirectory(LinkEntryRepository)
+add_subdirectory(WebsiteRepository)
 add_subdirectory(tests)
 
 # install crawler_run and crawler_test in bin directory
