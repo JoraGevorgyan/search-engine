@@ -16,7 +16,14 @@ private:
     time_t lastCrawledTime;
 
 public:
-    Website();
+    Website(std::string domain, std::string homepage, size_t id);
+
+    bool operator < (const Website& other) const;
+    void update();
+
+    std::string getDomain() const;
+    std::string getHomapage() const;
+    size_t getID() const;
 };
 
 
