@@ -9,6 +9,7 @@
 #include <cerrno>
 #include <string>
 #include <vector>
+#include <stdexcept>
 
 class Parser {
 private:
@@ -33,6 +34,7 @@ private:
     int extractUrls(GumboNode* node, const std::string& homeUrl);
     int extractTitle(GumboNode* node);
     int extractDscrpt(GumboNode* node);
+    int extractContent(GumboNode* node);
     std::string getHomeUrl(const std::string& url) const;
     std::string addPath(const std::string& homeUrl, const std::string& path) const;
 };
