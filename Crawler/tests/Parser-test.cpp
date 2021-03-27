@@ -10,11 +10,11 @@
 std::string readFile(const std::string& path) {
     std::string result;
     std::ifstream file(path);
-    if(!file.is_open()) {
+    if (!file.is_open()) {
        return result;
     }
     std::string current;
-    while(getline(file, current)) {
+    while (getline(file, current)) {
         result += current;
         result += '\n';
     }

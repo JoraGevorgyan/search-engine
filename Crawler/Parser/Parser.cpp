@@ -14,24 +14,23 @@ int Parser::parse() {
     if (output == nullptr) {
         return errno;
     }
-    // extracting urls
+
     std::string homeUrl = this->getHomeUrl(this->startingUrl);
     int err = this->extractUrls(output->root, homeUrl);
     if (err != 0) {
         return err;
     }
-    // extracting a title
+
     err = this->extractTitle(output->root);
     if (err != 0) {
         return err;
     }
-    // extracting description
+
     err = this->extractDscrpt(output->root);
     if (err != 0) {
         return err;
     }
 
-    // extracting a content
     err = this->extractContent(output->root);
     if (err != 0) {
         return err;
@@ -94,7 +93,7 @@ int Parser::extractTitle(GumboNode* node) {
 
 std::string Parser::getHomeUrl(const std::string& url) const {
     size_t breakIndex = 1;
-    for(size_t i = 1; i < url.size(); ++i, ++breakIndex) {
+    for (size_t i = 1; i < url.size(); ++i, ++breakIndex) {
         if(url[i] == '/' && url[i - 1] == '/') {
             break;
         }

@@ -17,8 +17,10 @@ Page PageLoader::load(const std::string& url) {
 
     // for saving info in this stream
     std::ostringstream os;
+
     // make option for writing into 'os' stream
     curlpp::options::WriteStream ws(&os);
+
     // change default write stream as 'os'
     request.setOpt(ws);
     request.perform();

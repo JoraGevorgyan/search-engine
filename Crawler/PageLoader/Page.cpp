@@ -5,9 +5,9 @@
 #include "Page.hpp"
 
 Page::Page(std::string effUrl, std::string data, int status)
-    :effUrl{std::move(effUrl)}
-    ,data{std::move(data)}
-    ,status{status} {
+    : effUrl{std::move(effUrl)}
+    , data{std::move(data)}
+    , status{status} {
 }
 
 const std::string& Page::getEffUrl() const {
