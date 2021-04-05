@@ -5,18 +5,17 @@
 #ifndef CRAWLER_LINKENTRYREPOSITORY_HPP
 #define CRAWLER_LINKENTRYREPOSITORY_HPP
 
-#include <set>
 #include <vector>
 #include "LinkEntry.hpp"
 
 class LinkEntryRepository {
-private:
-    std::set<LinkEntry> links;
+ private:
+  std::vector<LinkEntry> links;
 
-public:
-    void add(const std::vector<std::string>& urls);
-    std::string getNext();
-    bool empty() const;
+ public:
+  void save(const LinkEntry &link);
+  LinkEntry *getByUrl(const std::string &url);
+  int count() const;
 };
 
 #endif //CRAWLER_LINKENTRYREPOSITORY_HPP

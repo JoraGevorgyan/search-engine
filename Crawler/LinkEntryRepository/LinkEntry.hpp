@@ -9,21 +9,20 @@
 #include <string>
 
 class LinkEntry {
-private:
-    size_t id;
-    std::string url;
-    time_t lastLoadedTime;
-    time_t addedTime;
+ private:
+  int id;
+  std::string url;
+  std::string domain;
+  time_t loaded;
+  time_t created;
 
-public:
-    LinkEntry(std::string url, size_t id);
+ public:
+  LinkEntry(int id, std::string url, std::string domain);
 
-    void update();
-    size_t getID() const;
-    std::string getUrl() const;
+  int getId() const;
+  const std::string &getUrl() const;
+  const std::string &getDomain() const;
 
-    bool operator < (const LinkEntry& other) const;
 };
-
 
 #endif //CRAWLER_LINKENTRY_HPP

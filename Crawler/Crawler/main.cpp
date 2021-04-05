@@ -3,32 +3,41 @@
 //
 
 #include <iostream>
+#include "WebsiteRepository.hpp"
+#include "LinkEntryRepository.hpp"
 #include "PageLoader.hpp"
 #include "Parser.hpp"
 
 int main() {
-    try {
-        PageLoader pageLoader;
-        Page rau = pageLoader.load("bbc.com");
-        Parser parser(rau.getData(), rau.getEffUrl());
+  try {
+    auto webisteRepo = WebsiteRepository();
+    const auto &websites = webisteRepo.getAll();
 
-        int err = parser.parse();
-        if (err != 0) {
-            return err;
-        }
-        std::cout << parser.getTitle() << std::endl;
-        std::cout << parser.getDescription() << std::endl;
-        std::cout << parser.getContent() << std::endl;
+    auto linkRepo = LinkEntryRepository();
 
-        auto urls = parser.getUrls();
-        for (const auto& cur : urls) {
-            std::cout << cur << std::endl;
-        }
-        std::cout << std::endl;
+    for (const auto &website : websites) {
+      // test
+      auto homepage = website.getHomapage();
+
+      auto homepageEntry = linkRepo.getByUrl(homepage);
+      int id = linkRepo.count() + 1;
+      if (homepageEntry != nullptr) {
+        id = homepageEntry->getId();
+      }
+
+      auto newLinkEntry = LinkEntry(id, " ", " ");
+      linkRepo.save(newLinkEntry);
+
+      while (true) {
+        linkRepo.getFirstNotLoaded("domain");
+
+      }
+
     }
-    catch (const std::exception& exc) {
-        std::cout << "thrown exception: "
-            << exc.what() << std::endl;
-    }
-    return 0;
+  }
+  catch (const std::exception &exc) {
+    std::cout << "thrown exception: "
+              << exc.what() << std::endl;
+  }
+  return 0;
 }

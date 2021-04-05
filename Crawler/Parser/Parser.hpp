@@ -12,31 +12,31 @@
 #include <stdexcept>
 
 class Parser {
-private:
-    std::vector<std::string> urls;
-    std::string title;
-    std::string description;
-    std::string content;
+ private:
+  std::vector<std::string> urls;
+  std::string title;
+  std::string description;
+  std::string content;
 
-    std::string html;
-    std::string startingUrl;
+  std::string html;
+  std::string startingUrl;
 
-public:
-    Parser(std::string html, std::string startingUrl);
+ public:
+  Parser(std::string html, std::string startingUrl);
 
-    int parse();
-    const std::vector<std::string>& getUrls() const;
-    const std::string& getTitle() const;
-    const std::string& getDescription() const;
-    const std::string& getContent() const;
+  int parse();
+  const std::vector<std::string> &getUrls() const;
+  const std::string &getTitle() const;
+  const std::string &getDescription() const;
+  const std::string &getContent() const;
 
-private:
-    int extractUrls(GumboNode* node, const std::string& homeUrl);
-    int extractTitle(GumboNode* node);
-    int extractDscrpt(GumboNode* node);
-    int extractContent(GumboNode* node);
-    std::string getHomeUrl(const std::string& url) const;
-    std::string addPath(const std::string& homeUrl, const std::string& path) const;
+ private:
+  int extractUrls(GumboNode *node, const std::string &homeUrl);
+  int extractTitle(GumboNode *node);
+  int extractDscrpt(GumboNode *node);
+  int extractContent(GumboNode *node);
+  std::string getHomeUrl(const std::string &url) const;
+  std::string addPath(const std::string &homeUrl, const std::string &path) const;
 };
 
 #endif //SEARCH_ENGINE_PARSER_HPP

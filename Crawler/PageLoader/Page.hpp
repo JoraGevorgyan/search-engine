@@ -8,16 +8,16 @@
 #include <string>
 
 class Page {
-private:
-    std::string data;
-    std::string effUrl;
-    int status;
+ private:
+  std::string data;
+  std::string effUrl;
+  int status;
 
-public:
-    Page(std::string effUrl, std::string data, int status);
-    const std::string& getEffUrl() const;
-    const std::string& getData() const;
-    int getStatus() const;
+ public:
+  Page(std::string effUrl, std::string data, int status);
+  const std::string &getEffUrl() const;
+  const std::string &getData() const;
+  int getStatus() const;
 };
 
 #endif //SEARCH_ENGINE_PAGE_HPP

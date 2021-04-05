@@ -7,8 +7,8 @@
 #include "PageLoader.hpp"
 
 TEST(loadingTest, test1) {
-    const std::string url = "cplusplus.com";
-    PageLoader pageLoader;
-    Page page =  pageLoader.load(url);
-    EXPECT_EQ(page.getStatus(), 200);
+  const std::string url = "cplusplus.com";
+  PageLoader pageLoader;
+  Page page = pageLoader.load(url);
+  EXPECT_EQ(page.getStatus(), 200);
 }

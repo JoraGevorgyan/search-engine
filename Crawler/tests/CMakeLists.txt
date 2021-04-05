@@ -15,3 +15,4 @@ target_link_libraries(
         ${CMAKE_PROJECT_NAME}_loader
         ${CMAKE_PROJECT_NAME}_parser
         gtest pthread)
+

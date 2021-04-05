@@ -4,28 +4,19 @@
 
 #include "LinkEntry.hpp"
 
-LinkEntry::LinkEntry(std::string url, size_t id)
-    : url{std::move(url)}
-    , id{id}
-    , addedTime{time(nullptr)}
-    , lastLoadedTime{0} {
+LinkEntry::LinkEntry(int id, std::string url, std::string domain)
+    : id{id}, domain{std::move(domain)}, url{std::move(url)}, created{time(nullptr)}, loaded{0} {
+
 }
 
-void LinkEntry::update() {
-    this->lastLoadedTime = time(nullptr);
+const std::string &LinkEntry::getUrl() const {
+  return this->url;
 }
 
-bool LinkEntry::operator < (const LinkEntry &other) const {
-    if(this->lastLoadedTime == other.lastLoadedTime) {
-        return this->addedTime < other.addedTime;
-    }
-    return this->lastLoadedTime < other.lastLoadedTime;
+const std::string &LinkEntry::getDomain() const {
+  return this->domain;
 }
 
-std::string LinkEntry::getUrl() const {
-    return this->url;
-}
-
-size_t LinkEntry::getID() const {
-    return this->id;
+int LinkEntry::getId() const {
+  return this->id;
 }

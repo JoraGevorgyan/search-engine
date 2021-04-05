@@ -16,5 +16,6 @@ install(TARGETS crawler_test DESTINATION bin)
 
 # change default install path if user has not set any directory
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set (CMAKE_INSTALL_PREFIX "../" CACHE PATH "default install path" FORCE )
-endif()
+    set(CMAKE_INSTALL_PREFIX "../" CACHE PATH "default install path" FORCE)
+endif ()
+

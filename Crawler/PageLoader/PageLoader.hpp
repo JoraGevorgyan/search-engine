@@ -15,8 +15,8 @@
 #include "Page.hpp"
 
 class PageLoader {
-public:
-    Page load(const std::string& url);
+ public:
+  Page load(const std::string &url);
 };
 
 #endif //SEARCH_ENGINE_PAGE_LOADER_HPP

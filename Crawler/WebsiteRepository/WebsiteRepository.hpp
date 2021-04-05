@@ -6,24 +6,17 @@
 #define CRAWLER_WEBSITEREPOSITORY_HPP
 
 #include <vector>
-#include <set>
 
 #include "Website.hpp"
 
 class WebsiteRepository {
-private:
-    std::set<Website> database;
+ private:
+  std::vector<Website> database;
 
-public:
-    /*
-     *
-     */
-    std::vector<Website> getAll() const;
-    Website getNext();
-    void add(const Website& website);
-    bool empty() const;
-
+ public:
+  WebsiteRepository();
+  std::vector<Website> getAll() const;
+  void add(const Website &website);
 };
-
 
 #endif //CRAWLER_WEBSITEREPOSITORY_HPP
