@@ -6,7 +6,6 @@
 #define CRAWLER_WEBSITEREPOSITORY_HPP
 
 #include <vector>
-
 #include "Website.hpp"
 
 class WebsiteRepository {
@@ -15,8 +14,8 @@ class WebsiteRepository {
 
  public:
   WebsiteRepository();
-  std::vector<Website> getAll() const;
-  void add(const Website &website);
+  inline const std::vector<Website>& getAll() const;
+  void save(const Website &website);
 };
 
 #endif //CRAWLER_WEBSITEREPOSITORY_HPP

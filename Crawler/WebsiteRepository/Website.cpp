@@ -4,26 +4,27 @@
 
 #include "Website.hpp"
 
-Website::Website(std::string domain, std::string homepage, size_t id)
-    : domain{std::move(domain)}, homepage{std::move(homepage)}, id{id}, lastCrawledTime{time(nullptr)} {
+Website::Website(int id, std::string domain, std::string homepage)
+    : id{id}, domain{std::move(domain)}, homepage{std::move(homepage)}, crawled{0} {
 
 }
 
-bool Website::operator<(const Website &other) const {
-  return this->lastCrawledTime < other.lastCrawledTime;
-}
-void Website::update() {
-  this->lastCrawledTime = time(nullptr);
+inline int Website::getID() const {
+  return this->id;
 }
 
-std::string Website::getDomain() const {
+inline const std::string& Website::getDomain() const {
   return this->domain;
 }
 
-std::string Website::getHomapage() const {
+inline const std::string& Website::getHomapage() const {
   return this->homepage;
 }
 
-size_t Website::getID() const {
-  return this->id;
+inline time_t Website::getCrawledTime() const {
+  return this->crawled;
+}
+
+inline void Website::setCrawledTime(time_t crawledTime) {
+  this->crawled = crawledTime;
 }

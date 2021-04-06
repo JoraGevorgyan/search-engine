@@ -10,20 +10,20 @@
 
 class Website {
  private:
-  size_t id;
+  int id;
   std::string domain;
   std::string homepage;
-  time_t lastCrawledTime;
+  time_t crawled;
 
  public:
-  Website(std::string domain, std::string homepage, size_t id);
+  Website(int id, std::string domain, std::string homepage);
 
-  bool operator<(const Website &other) const;
-  void update();
+  inline int getID() const;
+  inline const std::string& getDomain() const;
+  inline const std::string& getHomapage() const;
+  inline time_t getCrawledTime() const;
 
-  std::string getDomain() const;
-  std::string getHomapage() const;
-  size_t getID() const;
+  inline void setCrawledTime(time_t crawledTime = time(nullptr));
 };
 
 #endif //CRAWLER_WEBSITE_HPP

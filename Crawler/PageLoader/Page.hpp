@@ -15,9 +15,10 @@ class Page {
 
  public:
   Page(std::string effUrl, std::string data, int status);
-  const std::string &getEffUrl() const;
-  const std::string &getData() const;
-  int getStatus() const;
+  inline const std::string &getEffUrl() const;
+  inline const std::string &getData() const;
+  inline int getStatus() const;
+  inline bool valid() const;
 };
 
 #endif //SEARCH_ENGINE_PAGE_HPP

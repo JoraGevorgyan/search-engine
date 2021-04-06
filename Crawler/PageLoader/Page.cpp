@@ -8,14 +8,18 @@ Page::Page(std::string effUrl, std::string data, int status)
     : effUrl{std::move(effUrl)}, data{std::move(data)}, status{status} {
 }
 
-const std::string &Page::getEffUrl() const {
+inline const std::string &Page::getEffUrl() const {
   return this->effUrl;
 }
 
-const std::string &Page::getData() const {
+inline const std::string &Page::getData() const {
   return this->data;
 }
 
-int Page::getStatus() const {
+inline int Page::getStatus() const {
   return this->status;
+}
+
+inline bool Page::valid() const {
+  return this->status >= 200 && this->status <= 300;
 }

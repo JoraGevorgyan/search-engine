@@ -9,14 +9,26 @@ LinkEntry::LinkEntry(int id, std::string url, std::string domain)
 
 }
 
-const std::string &LinkEntry::getUrl() const {
+inline int LinkEntry::getId() const {
+  return this->id;
+}
+
+inline const std::string& LinkEntry::getUrl() const {
   return this->url;
 }
 
-const std::string &LinkEntry::getDomain() const {
+inline const std::string& LinkEntry::getDomain() const {
   return this->domain;
 }
 
-int LinkEntry::getId() const {
-  return this->id;
+inline time_t LinkEntry::getLoadedTime() const {
+  return this->loaded;
+}
+
+inline time_t LinkEntry::getCreatedTime() const {
+  return this->created;
+}
+
+inline void LinkEntry::setLoadedTime(time_t loadTime) {
+  this->loaded = loadTime;
 }

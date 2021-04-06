@@ -5,13 +5,19 @@
 #include "WebsiteRepository.hpp"
 
 WebsiteRepository::WebsiteRepository() {
-  this->database.emplace_back(Website("rau.am", "http://rau.am/", 1));
+  this->database.emplace_back(Website(1, "bbc.com", "https://www.bbc.com/"));
 }
 
-void WebsiteRepository::add(const Website &website) {
-  this->database.push_back(website);
+inline const std::vector<Website>& WebsiteRepository::getAll() const {
+  return this->database;
 }
 
-std::vector<Website> WebsiteRepository::getAll() const {
-  return std::vector<Website>(this->database.begin(), this->database.end());
+void WebsiteRepository::save(const Website& website) {
+  for (auto& curWebsite : this->database) {
+    if (curWebsite.getID() == website.getID()) {
+      curWebsite = website;
+      return;
+    }
+  }
+  this->database.emplace_back(website);
 }

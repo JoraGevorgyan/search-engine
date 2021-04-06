@@ -19,10 +19,13 @@ class LinkEntry {
  public:
   LinkEntry(int id, std::string url, std::string domain);
 
-  int getId() const;
-  const std::string &getUrl() const;
-  const std::string &getDomain() const;
+  inline int getId() const;
+  inline const std::string& getUrl() const;
+  inline const std::string& getDomain() const;
+  inline time_t getLoadedTime() const;
+  inline time_t getCreatedTime() const;
 
+  inline void setLoadedTime(time_t loadTime = time(nullptr));
 };
 
 #endif //CRAWLER_LINKENTRY_HPP

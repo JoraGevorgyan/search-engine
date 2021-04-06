@@ -8,6 +8,7 @@ add_subdirectory(PageLoader)
 add_subdirectory(Parser)
 add_subdirectory(LinkEntryRepository)
 add_subdirectory(WebsiteRepository)
+add_subdirectory(IndexRepository)
 add_subdirectory(tests)
 
 # install crawler_run and crawler_test in bin directory

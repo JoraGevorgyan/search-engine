@@ -6,6 +6,7 @@
 #define CRAWLER_LINKENTRYREPOSITORY_HPP
 
 #include <vector>
+#include <algorithm>
 #include "LinkEntry.hpp"
 
 class LinkEntryRepository {
@@ -14,8 +15,9 @@ class LinkEntryRepository {
 
  public:
   void save(const LinkEntry &link);
-  LinkEntry *getByUrl(const std::string &url);
-  int count() const;
+  LinkEntry* getByUrl(const std::string& url);
+  LinkEntry* getFirstNotLoaded(const std::string& domainName);
+  inline int count() const;
 };
 
 #endif //CRAWLER_LINKENTRYREPOSITORY_HPP
