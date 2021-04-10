@@ -2,9 +2,9 @@
 // Created by jora on 4/6/21.
 //
 
-#include "Index.hpp"
+#include "Document.hpp"
 
-Index::Index(int id, std::string url, std::string title, std::string description, std::string content)
+Document::Document(int id, std::string url, std::string title, std::string description, std::string content)
     : id{id},
       url{std::move(url)},
       title{std::move(title)},
@@ -13,26 +13,26 @@ Index::Index(int id, std::string url, std::string title, std::string description
 
 }
 
-inline int Index::getId() const {
+inline int Document::getId() const {
   return this->id;
 }
 
-inline time_t Index::getUpdatedTime() const {
+inline time_t Document::getUpdatedTime() const {
   return this->updated;
 }
 
-inline const std::string& Index::getUrl() const {
+inline const std::string& Document::getUrl() const {
   return this->url;
 }
 
-inline const std::string& Index::getTitle() const {
+inline const std::string& Document::getTitle() const {
   return this->title;
 }
 
-inline const std::string& Index::getDescription() const {
+inline const std::string& Document::getDescription() const {
   return this->description;
 }
 
-inline const std::string& Index::getContent() const {
+inline const std::string& Document::getContent() const {
   return this->content;
 }

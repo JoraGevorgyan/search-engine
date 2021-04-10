@@ -7,52 +7,59 @@
 #include "PageLoader.hpp"
 #include "WebsiteRepository.hpp"
 #include "LinkEntryRepository.hpp"
+#include "DocumentRepository.hpp"
 
 int main() {
   try {
-    auto webisteRepo = WebsiteRepository();
-    const auto& websites = webisteRepo.getAll();
+    auto websiteRepo = WebsiteRepository();
+    const auto &websites = websiteRepo.getAll();
 
     auto linkRepo = LinkEntryRepository();
+    auto indexRepo = DocumentRepository(); // document
+    PageLoader pageLoader;
 
-    for (const auto& website : websites) {
+    for (const auto &website : websites) {
       if (website.getCrawledTime() != 0) {
         continue;
       }
 
-      const auto& homepage = website.getHomapage();
+      const auto &homepage = website.getHomapage();
 
-      auto homepageEntry = linkRepo.getByUrl(homepage);
-      int id = linkRepo.count() + 1;
-      if (homepageEntry != nullptr) {
-        id = homepageEntry->getId();
-      }
-
-      auto newLinkEntry = LinkEntry(id, homepage, website.getDomain()); // ????
-      linkRepo.save(newLinkEntry);
+      auto homepageEntry = LinkEntry(homepage, website.getDomain(), LinkStatus::WAITING, time(nullptr));
+      linkRepo.save(homepageEntry);
 
       while (true) {
-        auto* link = linkRepo.getFirstNotLoaded(website.getDomain());
-        PageLoader pageLoader;
-        auto page = pageLoader.load(link->getUrl());
-        if (page.valid()) {
-          link->setLoadedTime();
+        auto links = linkRepo.getBy(website.getDomain(), LinkStatus::WAITING, 10);
+        if (links.empty()) {
+          break;
+        }
 
+        for (const auto &link : links) {
+          auto page = pageLoader.load(link.getUrl());
+          if (!page.valid()) {
+            linkRepo.save(LinkEntry(link.getUrl(), link.getDomain(), LinkStatus::INVALID, time(nullptr)));
+            continue;
+          }
           Parser parser(page.getData(), page.getEffUrl());
           int err = parser.parse();
-          if (err == 0) {
-            parser.getUrls();
-          } else {
-            // in the future this can be changed as log file
-            std::cerr << "can't parse the following html code ( error code: " << err << " ): " <<  std::endl;
-            std::cerr << page.getData() << std::endl;
+          if (err != 0) {
+            linkRepo.save(LinkEntry(link.getUrl(), link.getDomain(), LinkStatus::INVALID, time(nullptr)));
+            continue;
           }
-        } else {
-          std::cerr << "the following page can't load with exit status: " << page.getStatus() << std::endl;
-          std::cerr << "\t" << link->getUrl() << std::endl;
+
+          auto urls = parser.getUrls();
+          for (const auto &url : urls) {
+            if (linkRepo.getByUrl(url).has_value()) {
+              continue;
+            }
+            linkRepo.save(LinkEntry(url, website.getDomain(), LinkStatus::WAITING, time(nullptr)));
+          }
+
+          // indexRepo.save(Document())
+
         }
       }
-
+    // websiteRepo.save() // set updated
     }
   }
   catch (const std::exception &exc) {

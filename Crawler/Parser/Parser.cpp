@@ -37,6 +37,8 @@ int Parser::parse() {
 
   // clean up
   gumbo_destroy_output(&kGumboDefaultOptions, output);
+
+  this->setDomain();
   return 0;
 }
 
@@ -60,7 +62,7 @@ int Parser::extractUrls(GumboNode *node, const std::string &homeUrl) {
   std::string curUrl = std::string(href->value);
   std::string curHomeUrl = this->getHomeUrl(curUrl);
 
-  // skip if out of current webiste or started at '#'
+  // skip if is out of current webiste or started at '#'
   if (!curHomeUrl.empty() && curHomeUrl != homeUrl || curUrl.front() == '#' || curUrl.empty()) {
     return 0;
   }
@@ -100,7 +102,10 @@ std::string Parser::getHomeUrl(const std::string &url) const {
   if (breakIndex == 1) {
     return std::string("");
   }
-  while (breakIndex < url.size() && url[++breakIndex] != '/');
+  ++breakIndex;
+  while (breakIndex < url.size() && url[breakIndex] != '/') {
+    ++breakIndex;
+  }
 
   return std::string(url, 0, breakIndex);
 }
@@ -114,7 +119,11 @@ std::string Parser::addPath(const std::string &homeUrl, const std::string &path)
   }
   // erase last part from starting url for getting current page url and add path on it
   size_t index = 0;
-  for (index = this->startingUrl.size() - 1; index != 0 && this->startingUrl[index] != '/'; --index);
+  for (index = this->startingUrl.size() - 1; index != 0; --index) {
+    if (this->startingUrl[index] == '/') {
+      break;
+    }
+  }
   // starting url was invalid
   if (index == 0) {
     std::string exceptionMessage = "Parser: effective url was invalid ... can't find domain name";
@@ -173,18 +182,29 @@ int Parser::extractContent(GumboNode *node) {
   }
   return 0;
 }
-const std::vector<std::string> &Parser::getUrls() const {
+
+void Parser::setDomain() {
+  std::string homeUrl = this->getHomeUrl(this->startingUrl);
+  auto fit = std::find(homeUrl.begin(), homeUrl.end(), '/');
+  this->domain = std::string(fit + 2,  homeUrl.end() - 1);
+}
+
+inline const std::vector<std::string> &Parser::getUrls() const {
   return this->urls;
 }
 
-const std::string &Parser::getTitle() const {
+inline const std::string &Parser::getTitle() const {
   return this->title;
 }
 
-const std::string &Parser::getDescription() const {
+inline const std::string &Parser::getDescription() const {
   return this->description;
 }
 
-const std::string &Parser::getContent() const {
+inline const std::string &Parser::getContent() const {
   return this->content;
+}
+
+inline const std::string &Parser::getDomain() const {
+  return this->domain;
 }

@@ -21,5 +21,5 @@ inline int Page::getStatus() const {
 }
 
 inline bool Page::valid() const {
-  return this->status >= 200 && this->status <= 300;
+  return this->status >= 200 && this->status < 300;
 }

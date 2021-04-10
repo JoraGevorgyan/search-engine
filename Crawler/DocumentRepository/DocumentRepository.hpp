@@ -6,15 +6,15 @@
 #define CRAWLER_INDEXREPOSITORY_INDEXREPOSITORY_HPP_
 
 #include <vector>
-#include "Index.hpp"
+#include "Document.hpp"
 
-class IndexRepository {
+class DocumentRepository {
  private:
-  std::vector<Index> database;
+  std::vector<Document> database;
 
  public:
-  void save(const Index& index);
-  inline const std::vector<Index>& getAll() const;
+  void save(const Document& index);
+  inline const std::vector<Document>& getAll() const;
 };
 
 #endif //CRAWLER_INDEXREPOSITORY_INDEXREPOSITORY_HPP_

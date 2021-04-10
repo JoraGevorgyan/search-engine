@@ -7,25 +7,22 @@
 
 #include <ctime>
 #include <string>
+#include "LinkStatus.hpp"
 
 class LinkEntry {
  private:
-  int id;
   std::string url;
   std::string domain;
-  time_t loaded;
-  time_t created;
+  LinkStatus status;
+  time_t updated;
 
  public:
-  LinkEntry(int id, std::string url, std::string domain);
+  LinkEntry(std::string url, std::string domain, LinkStatus status, time_t updated);
 
-  inline int getId() const;
   inline const std::string& getUrl() const;
   inline const std::string& getDomain() const;
-  inline time_t getLoadedTime() const;
-  inline time_t getCreatedTime() const;
-
-  inline void setLoadedTime(time_t loadTime = time(nullptr));
+  inline LinkStatus getStatus() const;
+  inline time_t getUpdatedTime() const;
 };
 
 #endif //CRAWLER_LINKENTRY_HPP

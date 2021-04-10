@@ -2,10 +2,10 @@
 // Created by jora on 4/6/21.
 //
 
-#include "IndexRepository.hpp"
+#include "DocumentRepository.hpp"
 
-void IndexRepository::save(const Index& index) {
-  for (Index &curIndex : this->database) {
+void DocumentRepository::save(const Document& index) {
+  for (Document &curIndex : this->database) {
     if (curIndex.getId() == index.getId()) {
       curIndex = index;
       return;
@@ -14,6 +14,6 @@ void IndexRepository::save(const Index& index) {
   this->database.emplace_back(index);
 }
 
-inline const std::vector<Index>& IndexRepository::getAll() const {
+inline const std::vector<Document>& DocumentRepository::getAll() const {
   return this->database;
 }
