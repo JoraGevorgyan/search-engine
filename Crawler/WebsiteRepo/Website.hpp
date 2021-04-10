@@ -9,21 +9,36 @@
 #include <string>
 
 class Website {
- private:
-  int id;
-  std::string domain;
-  std::string homepage;
-  time_t crawled;
+private:
+	int id;
+	std::string domain;
+	std::string homepage;
+	time_t crawled;
 
- public:
-  Website(int id, std::string domain, std::string homepage);
+public:
+	Website(int id, std::string domain, std::string homepage);
 
-  inline int getID() const;
-  inline const std::string& getDomain() const;
-  inline const std::string& getHomapage() const;
-  inline time_t getCrawledTime() const;
+	[[nodiscard]] inline int getID() const
+	{
+		return this->id;
+	}
+	[[nodiscard]] inline const std::string& getDomain() const
+	{
+		return this->domain;
+	}
+	[[nodiscard]] inline const std::string& getHomapage() const
+	{
+		return this->domain;
+	}
+	[[nodiscard]] inline time_t getCrawledTime() const
+	{
+		return this->crawled;
+	}
 
-  inline void setCrawledTime(time_t crawledTime = time(nullptr));
+	inline void setCrawledTime(time_t crawledTime = time(nullptr))
+	{
+		this-crawled = crawledTime;
+	}
 };
 
 #endif //CRAWLER_WEBSITE_HPP

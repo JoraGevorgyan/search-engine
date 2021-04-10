@@ -10,19 +10,31 @@
 #include "LinkStatus.hpp"
 
 class LinkEntry {
- private:
-  std::string url;
-  std::string domain;
-  LinkStatus status;
-  time_t updated;
+private:
+	std::string url;
+	std::string domain;
+	LinkStatus status;
+	time_t updated;
 
- public:
-  LinkEntry(std::string url, std::string domain, LinkStatus status, time_t updated);
+public:
+	LinkEntry(std::string url, std::string domain, LinkStatus status, time_t updated);
 
-  inline const std::string& getUrl() const;
-  inline const std::string& getDomain() const;
-  inline LinkStatus getStatus() const;
-  inline time_t getUpdatedTime() const;
+	[[nodiscard]] inline const std::string& getUrl() const
+	{
+		return this->url;
+	}
+	[[nodiscard]] inline const std::string& getDomain() const
+	{
+		return this->domain;
+	}
+	[[nodiscard]]  inline LinkStatus getStatus() const
+	{
+		return this->status;
+	}
+	[[nodiscard]]   inline time_t getUpdatedTime() const
+	{
+		return this->updated;
+	}
 };
 
 #endif //CRAWLER_LINKENTRY_HPP

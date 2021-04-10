@@ -15,9 +15,12 @@ private:
 	std::vector<LinkEntry> links;
 
 public:
-	const std::vector<LinkEntry>& getAll() const;
+	[[nodiscard]] inline const std::vector<LinkEntry>& getAll() const
+	{
+		return this->links;
+	}
 	std::optional<LinkEntry> getByUrl(const std::string& url);
-	std::vector<LinkEntry> getBy(const std::string& domain, LinkStatus status, int count) const;
+	[[nodiscard]] std::vector<LinkEntry> getBy(const std::string& domain, LinkStatus status, int count) const;
 	void save(const LinkEntry& link);
 };
 
