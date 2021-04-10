@@ -2,8 +2,8 @@
 // Created by jora on 3/12/21.
 //
 
-#ifndef SEARCH_ENGINE_PAGE_LOADER_HPP
-#define SEARCH_ENGINE_PAGE_LOADER_HPP
+#ifndef CRAWLER_PAGELOADER_HPP
+#define CRAWLER_PAGELOADER_HPP
 
 #include <string>
 #include <sstream>
@@ -15,8 +15,8 @@
 #include "Page.hpp"
 
 class PageLoader {
- public:
-  Page load(const std::string &url);
+public:
+	static Page load(const std::string& url);
 };
 
-#endif //SEARCH_ENGINE_PAGE_LOADER_HPP
+#endif //CRAWLER_PAGELOADER_HPP

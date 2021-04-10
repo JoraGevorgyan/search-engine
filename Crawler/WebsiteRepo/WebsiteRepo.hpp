@@ -2,20 +2,20 @@
 // Created by jora on 3/16/21.
 //
 
-#ifndef CRAWLER_WEBSITEREPOSITORY_HPP
-#define CRAWLER_WEBSITEREPOSITORY_HPP
+#ifndef CRAWLER_WEBSITEREPO_HPP
+#define CRAWLER_WEBSITEREPO_HPP
 
 #include <vector>
 #include "Website.hpp"
 
-class WebsiteRepository {
+class WebsiteRepo {
  private:
   std::vector<Website> database;
 
  public:
-  WebsiteRepository();
+  WebsiteRepo();
   inline const std::vector<Website>& getAll() const;
   void save(const Website &website);
 };
 
-#endif //CRAWLER_WEBSITEREPOSITORY_HPP
+#endif //CRAWLER_WEBSITEREPO_HPP
