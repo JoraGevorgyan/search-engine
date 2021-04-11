@@ -6,16 +6,21 @@
 #define CRAWLER_WEBSITEREPO_HPP
 
 #include <vector>
+#include <algorithm>
 #include "Website.hpp"
 
 class WebsiteRepo {
- private:
-  std::vector<Website> database;
+private:
+	std::vector<Website> database;
 
- public:
-  WebsiteRepo();
-  inline const std::vector<Website>& getAll() const;
-  void save(const Website &website);
+public:
+	WebsiteRepo();
+	[[nodiscard]] inline const std::vector<Website>& getAll() const
+	{
+		return this->database;
+	}
+	[[nodiscard]] std::vector<Website> getBy(WebsiteStatus status, int count);
+	void save(const Website& website);
 };
 
 #endif //CRAWLER_WEBSITEREPO_HPP
