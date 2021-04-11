@@ -24,8 +24,8 @@ std::vector<LinkEntry> LinkEntryRepo::getBy(const std::string& domain, LinkStatu
 	}
 
 	std::sort(result.begin(), result.end(),
-			[](std::vector<LinkEntry>::iterator first, std::vector<LinkEntry>::iterator second) -> bool {
-			  return first->getUpdatedTime() < second->getUpdatedTime();
+			[](const LinkEntry& first, const LinkEntry& second) -> bool {
+			  return first.getUpdatedTime() < second.getUpdatedTime();
 			});
 
 	if (count < result.size()) {
