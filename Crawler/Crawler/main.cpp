@@ -16,14 +16,12 @@ int main()
 		const auto& websites = websiteRepo.getAll();
 
 		auto linkRepo = LinkEntryRepo();
-		auto indexRepo = DocumentRepo(); // document
-		PageLoader pageLoader;
+		auto documentRepo = DocumentRepo();
 
 		for (const auto& website : websites) {
-			if (website.getCrawledTime()!=0) {
+			if (website.getStatus() == WebsiteStatus::CRAWLED || website.getStatus() == WebsiteStatus::INVALID) {
 				continue;
 			}
-
 			const auto& homepage = website.getHomapage();
 
 			auto homepageEntry = LinkEntry(homepage, website.getDomain(), LinkStatus::WAITING, time(nullptr));
@@ -36,19 +34,20 @@ int main()
 				}
 
 				for (const auto& link : links) {
-					auto page = pageLoader.load(link.getUrl());
+					auto page = PageLoader::load(link.getUrl());
 					if (!page.valid()) {
-						linkRepo.save(
-								LinkEntry(link.getUrl(), link.getDomain(), LinkStatus::INVALID, time(nullptr)));
+						linkRepo.save(LinkEntry(link.getUrl(), link.getDomain(), LinkStatus::INVALID, time(nullptr)));
 						continue;
 					}
+
 					Parser parser(page.getData(), page.getEffUrl());
 					int err = parser.parse();
-					if (err!=0) {
-						linkRepo.save(
-								LinkEntry(link.getUrl(), link.getDomain(), LinkStatus::INVALID, time(nullptr)));
+					if (err != 0) {
+						linkRepo.save(LinkEntry(link.getUrl(), link.getDomain(), LinkStatus::INVALID, time(nullptr)));
 						continue;
 					}
+					linkRepo.save(LinkEntry(link.getUrl(), link.getDomain(), LinkStatus::LOADED, time(nullptr)));
+					std::cout << "one link loaded: " << link.getUrl() << std::endl;
 
 					auto urls = parser.getUrls();
 					for (const auto& url : urls) {
@@ -58,11 +57,15 @@ int main()
 						linkRepo.save(LinkEntry(url, website.getDomain(), LinkStatus::WAITING, time(nullptr)));
 					}
 
-					// indexRepo.save(Document())
+					documentRepo.save(Document(
+							page.getEffUrl(), parser.getTitle(),
+							parser.getDescription(),
+							parser.getContent(), time(nullptr)));
 
 				}
 			}
-			// websiteRepo.save() // set updated
+			websiteRepo.save(Website(website.getDomain(), website.getHomapage(), WebsiteStatus::CRAWLED, time(nullptr)));
+			std::cout << "\tone website crawled: " << website.getDomain() << std::endl;
 		}
 	}
 	catch (const std::exception& exc) {

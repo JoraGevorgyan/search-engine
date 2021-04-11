@@ -13,8 +13,12 @@ private:
 	std::vector<Document> database;
 
 public:
-	void save(const Document& index);
-	inline const std::vector<Document>& getAll() const;
+	[[nodiscard]] inline const std::vector<Document>& getAll() const
+	{
+		return this->database;
+	}
+	[[nodiscard]] std::optional<Document> getByUrl(const std::string& url);
+	void save(const Document& document);
 };
 
 #endif //CRAWLER_DOCUMENTREPO_HPP

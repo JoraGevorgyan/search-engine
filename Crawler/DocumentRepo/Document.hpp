@@ -9,23 +9,35 @@
 
 class Document {
 private:
-	int id;
-	time_t updated;
 	std::string url;
 	std::string title;
 	std::string description;
 	std::string content;
+	time_t updated;
 
 public:
-	Document(int id, std::string url, std::string title, std::string description, std::string content);
+	Document(std::string url, std::string title, std::string description, std::string content, time_t updated);
 
-	inline int getId() const;
-	inline time_t getUpdatedTime() const;
-	inline const std::string& getUrl() const;
-	inline const std::string& getTitle() const;
-	inline const std::string& getDescription() const;
-	inline const std::string& getContent() const;
-
+	[[nodiscard]] inline const std::string& getUrl() const
+	{
+		return this->url;
+	}
+	[[nodiscard]] inline const std::string& getTitle() const
+	{
+		return this->title;
+	}
+	[[nodiscard]] inline const std::string& getDescription() const
+	{
+		return this->description;
+	}
+	[[nodiscard]] inline const std::string& getContent() const
+	{
+		return this->content;
+	}
+	[[nodiscard]] inline time_t getUpdatedTime() const
+	{
+		return this->updated;
+	}
 };
 
 #endif //CRAWLER_DOCUMENT_HPP
