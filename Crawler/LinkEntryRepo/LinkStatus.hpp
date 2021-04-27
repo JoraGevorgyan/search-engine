@@ -6,9 +6,9 @@
 #define CRAWLER__LINKSTATUS_HPP
 
 enum class LinkStatus {
-	WAITING,
-	LOADED,
-	INVALID
+	WAITING = 0,
+	LOADED = 1,
+	INVALID = 2
 };
 
 #endif //CRAWLER__LINKSTATUS_HPP

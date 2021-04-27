@@ -12,7 +12,7 @@
 int main()
 {
 	try {
-		auto websiteRepo = WebsiteRepo();
+		WebsiteRepo* websiteRepo = new WebsiteRepoDb();
 		const auto& websites = websiteRepo.getAll();
 
 		auto linkRepo = LinkEntryRepo();

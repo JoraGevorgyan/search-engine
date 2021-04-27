@@ -4,8 +4,8 @@
 
 #include "Website.hpp"
 
-Website::Website(std::string domain, std::string homepage, WebsiteStatus status, time_t crawled)
-		:domain{ std::move(domain) }, homepage{ std::move(homepage) }, status{ status }, crawled{ crawled }
+Website::Website(int id, std::string domain, std::string homepage, WebsiteStatus status, time_t crawled)
+		:id{ id }, domain{ std::move(domain) }, homepage{ std::move(homepage) }, status{ status }, crawled{ crawled }
 {
 
 }

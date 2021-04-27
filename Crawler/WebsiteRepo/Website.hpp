@@ -11,14 +11,19 @@
 
 class Website {
 private:
+	int id;
 	std::string domain;
 	std::string homepage;
 	WebsiteStatus status;
 	time_t crawled;
 
 public:
-	Website(std::string domain, std::string homepage, WebsiteStatus status, time_t crawled);
+	Website(int id, std::string domain, std::string homepage, WebsiteStatus status, time_t crawled);
 
+	[[nodixcard]] inline int getId() const
+	{
+		return this->id;
+	}
 	[[nodiscard]] inline const std::string& getDomain() const
 	{
 		return this->domain;

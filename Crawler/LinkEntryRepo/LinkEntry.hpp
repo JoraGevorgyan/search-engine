@@ -11,21 +11,26 @@
 
 class LinkEntry {
 private:
+	int id;
+	int websiteId;
 	std::string url;
-	std::string domain;
 	LinkStatus status;
 	time_t updated;
 
 public:
-	LinkEntry(std::string url, std::string domain, LinkStatus status, time_t updated);
+	LinkEntry(int id, int websiteId, std::string url, LinkStatus status, time_t updated);
 
+	[[nodiscard]] inline int getId() const
+	{
+		return this->id;
+	}
+	[[nodiscard]] inline int getWebsiteId() const
+	{
+		return this->websiteId;
+	}
 	[[nodiscard]] inline const std::string& getUrl() const
 	{
 		return this->url;
-	}
-	[[nodiscard]] inline const std::string& getDomain() const
-	{
-		return this->domain;
 	}
 	[[nodiscard]]  inline LinkStatus getStatus() const
 	{

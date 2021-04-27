@@ -9,6 +9,7 @@
 
 class Document {
 private:
+	int id;
 	std::string url;
 	std::string title;
 	std::string description;
@@ -16,8 +17,12 @@ private:
 	time_t updated;
 
 public:
-	Document(std::string url, std::string title, std::string description, std::string content, time_t updated);
+	Document(int id, std::string url, std::string title, std::string description, std::string content, time_t updated);
 
+	[[nodiscard]] inline int getId() const
+	{
+		return this->id;
+	}
 	[[nodiscard]] inline const std::string& getUrl() const
 	{
 		return this->url;

@@ -4,9 +4,10 @@
 
 #include "LinkEntry.hpp"
 
-LinkEntry::LinkEntry(std::string url, std::string domain, LinkStatus status, time_t updated)
-		:url{ std::move(url) },
-		 domain{ std::move(domain) },
+LinkEntry::LinkEntry(int id, int websiteId, std::string url, LinkStatus status, time_t updated)
+		:id{ id },
+		 websiteId{ websiteId },
+		 url{ std::move(url) },
 		 status{ status },
 		 updated{ updated }
 {
