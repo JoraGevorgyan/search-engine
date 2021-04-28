@@ -17,8 +17,17 @@ private:
 	time_t updated;
 
 public:
-	Document(int id, std::string url, std::string title, std::string description, std::string content, time_t updated);
-
+	Document(int id, std::string url, std::string title, std::string description, std::string content, time_t updated)
+			:id{ id }, url{ std::move(url) },
+			 title{ std::move(title) },
+			 description{ std::move(description) },
+			 content{ std::move(content) }, updated{ updated }
+	{
+	}
+	bool operator==(const Document& other) const
+	{
+		return this->id == other.id;
+	}
 	[[nodiscard]] inline int getId() const
 	{
 		return this->id;

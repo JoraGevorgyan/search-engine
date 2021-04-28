@@ -6,7 +6,6 @@
 #define CRAWLER_WEBSITEREPO_HPP
 
 #include <vector>
-#include <algorithm>
 #include "Website.hpp"
 
 class WebsiteRepo {

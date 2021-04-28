@@ -3,74 +3,108 @@
 //
 
 #include <iostream>
+#include <memory>
 #include "Parser.hpp"
 #include "PageLoader.hpp"
-#include "WebsiteRepo.hpp"
-#include "LinkEntryRepo.hpp"
-#include "DocumentRepo.hpp"
+#include "WebsiteRepoInMem.hpp"
+#include "WebsiteRepoDb.hpp"
+#include "LinkEntryRepoInMem.hpp"
+#include "LinkEntryRepoDb.hpp"
+#include "DocumentRepoInMem.hpp"
+#include "DocumentRepoDb.hpp"
+
+void saveInvalidLink(const LinkEntry& link, std::unique_ptr<LinkEntryRepo>& linkEntryRepo)
+{
+	std::cout << "found invalid link: " << link.getUrl() << std::endl
+			  << "the following is its website id: " << link.getWebsiteId() << std::endl;
+	linkEntryRepo->save(LinkEntry(link.getId(), link.getWebsiteId(),
+			link.getUrl(), LinkStatus::INVALID, time(nullptr)));
+}
+
+void saveDocument(const std::string& url, const Parser& parser,
+		std::unique_ptr<DocumentRepo>& documentRepo)
+{
+	auto documentOpt = documentRepo->getByUrl(url);
+	if (documentOpt.has_value()) {
+		documentRepo->save(Document(documentOpt->getId(), url, parser.getTitle(),
+				parser.getDescription(), parser.getContent(), time(nullptr)));
+		return;
+	}
+	documentRepo->save(Document((int)documentRepo->getSize(), url, parser.getTitle(),
+			parser.getDescription(), parser.getContent(), time(nullptr)));
+}
+
+void saveLinks(const Parser& parser, const LinkEntry& link, std::unique_ptr<LinkEntryRepo>& linkEntryRepo)
+{
+	for (const auto& url : parser.getUrls()) {
+		if (linkEntryRepo->getByUrl(url).has_value()) {
+			continue;
+		}
+		linkEntryRepo->save(LinkEntry(link.getId(), link.getWebsiteId(),
+				link.getUrl(), LinkStatus::WAITING, time(nullptr)));
+	}
+}
+
+void crawlLink(const LinkEntry& link,
+		std::unique_ptr<LinkEntryRepo>& linkEntryRepo,
+		std::unique_ptr<DocumentRepo>& documentRepo)
+{
+	auto page = PageLoader::load(link.getUrl());
+	if (!page.valid()) {
+		saveInvalidLink(link, linkEntryRepo);
+		return;
+	}
+	Parser parser(page.getData(), page.getEffUrl());
+	if (!parser.isValid()) {
+		saveInvalidLink(link, linkEntryRepo);
+		return;
+	}
+	linkEntryRepo->save(LinkEntry(link.getId(), link.getWebsiteId(),
+			link.getUrl(), LinkStatus::LOADED, time(nullptr)));
+	std::cout << "link loaded successfully: " << link.getUrl() << std::endl;
+
+	saveDocument(link.getUrl(), parser, documentRepo);
+	saveLinks(parser, link, linkEntryRepo);
+}
+
+void crawlWebsite(const Website& website,
+		std::unique_ptr<LinkEntryRepo>& linkEntryRepo,
+		std::unique_ptr<DocumentRepo>& documentRepo)
+{
+	auto homepageOpt = linkEntryRepo->getByUrl(website.getHomepage());
+	if (homepageOpt.has_value()) {
+		linkEntryRepo->save(LinkEntry(homepageOpt->getId(), website.getId(),
+				homepageOpt->getUrl(), LinkStatus::WAITING, time(nullptr)));
+	}
+	else {
+		linkEntryRepo->save(LinkEntry((int)linkEntryRepo->getSize(), website.getId(),
+				website.getHomepage(), LinkStatus::WAITING, time(nullptr)));
+	}
+
+	while (true) {
+		constexpr int expectedLinksCount = 14;
+		auto links = linkEntryRepo->getBy(website.getId(), LinkStatus::WAITING, expectedLinksCount);
+		if (links.empty()) {
+			break;
+		}
+		for (const auto& link : links) {
+			crawlLink(link, linkEntryRepo, documentRepo);
+		}
+	}
+}
 
 int main()
 {
-	try {
-		WebsiteRepo* websiteRepo = new WebsiteRepoDb();
-		const auto& websites = websiteRepo.getAll();
+	std::unique_ptr<WebsiteRepo> websiteRepo = std::make_unique<WebsiteRepoInMem>();
+	std::unique_ptr<LinkEntryRepo> linkEntryRepo = std::make_unique<LinkEntryRepoInMem>();
+	std::unique_ptr<DocumentRepo> documentRepo = std::make_unique<DocumentRepoInMem>();
 
-		auto linkRepo = LinkEntryRepo();
-		auto documentRepo = DocumentRepo();
-
-		for (const auto& website : websites) {
-			if (website.getStatus() == WebsiteStatus::CRAWLED || website.getStatus() == WebsiteStatus::INVALID) {
-				continue;
-			}
-			const auto& homepage = website.getHomapage();
-
-			auto homepageEntry = LinkEntry(homepage, website.getDomain(), LinkStatus::WAITING, time(nullptr));
-			linkRepo.save(homepageEntry);
-
-			while (true) {
-				auto links = linkRepo.getBy(website.getDomain(), LinkStatus::WAITING, 10);
-				if (links.empty()) {
-					break;
-				}
-
-				for (const auto& link : links) {
-					auto page = PageLoader::load(link.getUrl());
-					if (!page.valid()) {
-						linkRepo.save(LinkEntry(link.getUrl(), link.getDomain(), LinkStatus::INVALID, time(nullptr)));
-						continue;
-					}
-
-					Parser parser(page.getData(), page.getEffUrl());
-					int err = parser.parse();
-					if (err != 0) {
-						linkRepo.save(LinkEntry(link.getUrl(), link.getDomain(), LinkStatus::INVALID, time(nullptr)));
-						continue;
-					}
-					linkRepo.save(LinkEntry(link.getUrl(), link.getDomain(), LinkStatus::LOADED, time(nullptr)));
-					std::cout << "one link loaded: " << link.getUrl() << std::endl;
-
-					auto urls = parser.getUrls();
-					for (const auto& url : urls) {
-						if (linkRepo.getByUrl(url).has_value()) {
-							continue;
-						}
-						linkRepo.save(LinkEntry(url, website.getDomain(), LinkStatus::WAITING, time(nullptr)));
-					}
-
-					documentRepo.save(Document(
-							page.getEffUrl(), parser.getTitle(),
-							parser.getDescription(),
-							parser.getContent(), time(nullptr)));
-
-				}
-			}
-			websiteRepo.save(Website(website.getDomain(), website.getHomapage(), WebsiteStatus::CRAWLED, time(nullptr)));
-			std::cout << "\tone website crawled: " << website.getDomain() << std::endl;
-		}
-	}
-	catch (const std::exception& exc) {
-		std::cout << "thrown exception: "
-				  << exc.what() << std::endl;
+	websiteRepo->save(Website(0, "cppreference.com", "https://en.cppreference.com/w/", time(nullptr)));
+	const auto& websites = websiteRepo->getAll();
+	for (const auto& website : websites) {
+		crawlWebsite(website, linkEntryRepo, documentRepo);
+		websiteRepo->save(Website(website.getId(), website.getDomain(), website.getHomepage(), time(nullptr)));
+		std::cout << "\tone website crawled: " << website.getDomain() << std::endl;
 	}
 	return 0;
 }

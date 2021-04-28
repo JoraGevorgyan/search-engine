@@ -18,8 +18,16 @@ private:
 	time_t updated;
 
 public:
-	LinkEntry(int id, int websiteId, std::string url, LinkStatus status, time_t updated);
-
+	LinkEntry(int id, int websiteId, std::string url, LinkStatus status, time_t updated)
+			:id{ id }, websiteId{ websiteId },
+			 url{ std::move(url) },
+			 status{ status }, updated{ updated }
+	{
+	}
+	bool operator==(const LinkEntry& other) const
+	{
+		return this->id == other.id;
+	}
 	[[nodiscard]] inline int getId() const
 	{
 		return this->id;

@@ -7,6 +7,8 @@
 Parser::Parser(std::string html, std::string startingUrl)
 		:html{ std::move(html) }, startingUrl{ std::move(startingUrl) }
 {
+	this->invalid = this->parse();
+
 }
 
 int Parser::parse()
@@ -27,7 +29,7 @@ int Parser::parse()
 		return err;
 	}
 
-	err = this->extractDscrpt(output->root);
+	err = this->extractDescription(output->root);
 	if (err!=0) {
 		return err;
 	}
@@ -131,15 +133,14 @@ std::string Parser::addPath(const std::string& homeUrl, const std::string& path)
 	}
 	// starting url was invalid
 	if (index==0) {
-		std::string exceptionMessage = "Parser: effective url was invalid ... can't find domain name";
-		throw std::runtime_error(exceptionMessage);
+		std::cerr << "Parser: effective url was invalid ... can't find domain name" << std::endl;
 	}
 	auto it = this->startingUrl.begin();
 	std::string currentPage(it, it+index+1);
 	return currentPage+path;
 }
 
-int Parser::extractDscrpt(GumboNode* node)
+int Parser::extractDescription(GumboNode* node)
 {
 	if (node->type!=GUMBO_NODE_ELEMENT) {
 		return -1;
@@ -148,7 +149,7 @@ int Parser::extractDscrpt(GumboNode* node)
 	if (node->v.element.tag!=GUMBO_TAG_META) {
 		GumboVector* children = &node->v.element.children;
 		for (size_t i = 0; i<children->length; ++i) {
-			this->extractDscrpt(static_cast<GumboNode*>(children->data[i]));
+			this->extractDescription(static_cast<GumboNode*>(children->data[i]));
 		}
 	}
 	// if the tag type is meta, than take from it description  and return

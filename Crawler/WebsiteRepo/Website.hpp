@@ -7,20 +7,26 @@
 
 #include <ctime>
 #include <string>
-#include "WebsiteStatus.hpp"
 
 class Website {
 private:
 	int id;
 	std::string domain;
 	std::string homepage;
-	WebsiteStatus status;
 	time_t crawled;
 
 public:
-	Website(int id, std::string domain, std::string homepage, WebsiteStatus status, time_t crawled);
-
-	[[nodixcard]] inline int getId() const
+	Website(int id, std::string domain, std::string homepage, time_t crawled)
+			:id{ id }, domain{ std::move(domain) },
+			 homepage{ std::move(homepage) },
+			 crawled{ crawled }
+	{
+	}
+	bool operator==(const Website& other) const
+	{
+		return this->id == other.id;
+	}
+	[[nodiscard]] inline int getId() const
 	{
 		return this->id;
 	}
@@ -28,14 +34,11 @@ public:
 	{
 		return this->domain;
 	}
-	[[nodiscard]] inline const std::string& getHomapage() const
+	[[nodiscard]] inline const std::string& getHomepage() const
 	{
 		return this->homepage;
 	}
-	[[nodiscard]] inline WebsiteStatus getStatus() const
-	{
-		return this->status;
-	}
+
 	[[nodiscard]] inline time_t getCrawledTime() const
 	{
 		return this->crawled;
