@@ -40,8 +40,11 @@ void saveLinks(const Parser& parser, const LinkEntry& link, std::unique_ptr<Link
 		if (linkEntryRepo->getByUrl(url).has_value()) {
 			continue;
 		}
-		linkEntryRepo->save(LinkEntry(link.getId(), link.getWebsiteId(),
-				link.getUrl(), LinkStatus::WAITING, time(nullptr)));
+		auto optLink = linkEntryRepo->getByUrl(url);
+		if (!optLink.has_value()) {
+			linkEntryRepo->save(LinkEntry((int)linkEntryRepo->getSize(), link.getId(),
+					url, LinkStatus::WAITING, time(nullptr)));
+		}
 	}
 }
 
@@ -100,6 +103,7 @@ int main()
 	std::unique_ptr<DocumentRepo> documentRepo = std::make_unique<DocumentRepoInMem>();
 
 	websiteRepo->save(Website(0, "cppreference.com", "https://en.cppreference.com/w/", time(nullptr)));
+	websiteRepo->save(Website(1, "bbc.com", "https://en.bbc.com/", time(nullptr)));
 	const auto& websites = websiteRepo->getAll();
 	for (const auto& website : websites) {
 		crawlWebsite(website, linkEntryRepo, documentRepo);

@@ -36,7 +36,9 @@ std::vector<LinkEntry> LinkEntryRepoInMem::getBy(int websiteId, LinkStatus statu
 			[](const LinkEntry& link1, const LinkEntry& link2) -> bool {
 			  return link1.getUpdatedTime() < link2.getUpdatedTime();
 			});
-	validLinks.erase(validLinks.begin() + count, validLinks.end());
+	if (count < validLinks.size()) {
+		validLinks.erase(validLinks.begin() + count, validLinks.end());
+	}
 	return validLinks;
 }
 
