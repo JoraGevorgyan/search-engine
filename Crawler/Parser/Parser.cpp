@@ -7,7 +7,7 @@
 Parser::Parser(std::string html, std::string startingUrl)
 		:html{ std::move(html) }, startingUrl{ std::move(startingUrl) }
 {
-	this->invalid = this->parse();
+	this->error = this->parse();
 
 }
 
@@ -131,9 +131,9 @@ std::string Parser::addPath(const std::string& homeUrl, const std::string& path)
 			break;
 		}
 	}
-	// starting url was invalid
+	// starting url was error
 	if (index==0) {
-		std::cerr << "Parser: effective url was invalid ... can't find domain name" << std::endl;
+		std::cerr << "Parser: effective url was error ... can't find domain name" << std::endl;
 	}
 	auto it = this->startingUrl.begin();
 	std::string currentPage(it, it+index+1);

@@ -21,14 +21,14 @@ private:
 
 	std::string html;
 	std::string startingUrl;
-	int invalid;
+	int error;
 
 public:
 	Parser(std::string html, std::string startingUrl);
 
-	[[nodiscard]] inline bool isValid() const
+	[[nodiscard]] inline bool invalid() const
 	{
-		return this->invalid == 0;
+		return this->error != 0;
 	}
 	[[nodiscard]] inline const std::vector<std::string>& getUrls() const
 	{

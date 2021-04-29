@@ -26,5 +26,5 @@ TEST(parsingTest, test1)
 {
 	const std::string html = readFile("../parserTest.html");
 	Parser parser(html, "https://example.am/");
-	EXPECT_EQ(parser.isValid(), true);
+	EXPECT_EQ(parser.invalid(), true);
 }

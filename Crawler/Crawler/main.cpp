@@ -15,8 +15,8 @@
 
 void saveInvalidLink(const LinkEntry& link, std::unique_ptr<LinkEntryRepo>& linkEntryRepo)
 {
-	std::cout << "found invalid link: " << link.getUrl() << std::endl
-			  << "the following is its website id: " << link.getWebsiteId() << std::endl;
+	std::cout << "found error link: " << link.getUrl() << std::endl
+			  << "from the website with < " << link.getWebsiteId() << " > id: " << std::endl;
 	linkEntryRepo->save(LinkEntry(link.getId(), link.getWebsiteId(),
 			link.getUrl(), LinkStatus::INVALID, time(nullptr)));
 }
@@ -40,11 +40,8 @@ void saveLinks(const Parser& parser, const LinkEntry& link, std::unique_ptr<Link
 		if (linkEntryRepo->getByUrl(url).has_value()) {
 			continue;
 		}
-		auto optLink = linkEntryRepo->getByUrl(url);
-		if (!optLink.has_value()) {
-			linkEntryRepo->save(LinkEntry((int)linkEntryRepo->getSize(), link.getId(),
-					url, LinkStatus::WAITING, time(nullptr)));
-		}
+		linkEntryRepo->save(LinkEntry((int)linkEntryRepo->getSize(), link.getWebsiteId(),
+				url, LinkStatus::WAITING, time(nullptr)));
 	}
 }
 
@@ -58,7 +55,7 @@ void crawlLink(const LinkEntry& link,
 		return;
 	}
 	Parser parser(page.getData(), page.getEffUrl());
-	if (!parser.isValid()) {
+	if (parser.invalid()) {
 		saveInvalidLink(link, linkEntryRepo);
 		return;
 	}
@@ -76,7 +73,7 @@ void crawlWebsite(const Website& website,
 {
 	auto homepageOpt = linkEntryRepo->getByUrl(website.getHomepage());
 	if (homepageOpt.has_value()) {
-		linkEntryRepo->save(LinkEntry(homepageOpt->getId(), website.getId(),
+		linkEntryRepo->save(LinkEntry(homepageOpt->getId(), homepageOpt->getWebsiteId(),
 				homepageOpt->getUrl(), LinkStatus::WAITING, time(nullptr)));
 	}
 	else {
@@ -103,7 +100,8 @@ int main()
 	std::unique_ptr<DocumentRepo> documentRepo = std::make_unique<DocumentRepoInMem>();
 
 	websiteRepo->save(Website(0, "cppreference.com", "https://en.cppreference.com/w/", time(nullptr)));
-	websiteRepo->save(Website(1, "bbc.com", "https://en.bbc.com/", time(nullptr)));
+	websiteRepo->save(Website(1, "cplusplus.com", "https://www.cplusplus.com/", time(nullptr)));
+	websiteRepo->save(Website(2, "bbc.com", "https://bbc.com/", time(nullptr)));
 	const auto& websites = websiteRepo->getAll();
 	for (const auto& website : websites) {
 		crawlWebsite(website, linkEntryRepo, documentRepo);
