@@ -10,6 +10,7 @@
 
 class WebsiteRepo {
 public:
+	virtual ~WebsiteRepo() = default;
 	virtual std::vector<Website> getAll() = 0;
 	virtual void save(const Website& website) = 0;
 };

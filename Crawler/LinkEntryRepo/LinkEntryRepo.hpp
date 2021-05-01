@@ -11,6 +11,7 @@
 
 class LinkEntryRepo {
 public:
+	virtual ~LinkEntryRepo() = default;
 	virtual std::vector<LinkEntry> getAll() = 0;
 	[[nodiscard]] virtual size_t getSize() const = 0;
 	virtual std::optional<LinkEntry> getByUrl(const std::string& url) = 0;
