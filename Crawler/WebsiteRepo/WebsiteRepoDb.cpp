@@ -39,13 +39,14 @@ WebsiteRepoDb::~WebsiteRepoDb() noexcept
 
 std::vector<Website> WebsiteRepoDb::getAll()
 {
-	std::vector<Website> websites{};
 	mysqlpp::Query query = this->connection.query();
 	auto result = query.use("SELECT * FROM websites");
 	if (!result) {
-		return websites;
+		std::cerr << "can't store from websites" << std::endl << query.error() << std::endl;
+		exit(1);
 	}
 
+	std::vector<Website> websites{};
 	while (mysqlpp::Row row = result.fetch_row()) {
 		tm timeStruct{};
 		strptime(row["crawled"].c_str(), "%Y-%m-%d %H:%M:%S", &timeStruct);
