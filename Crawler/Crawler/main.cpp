@@ -15,7 +15,7 @@
 
 void saveInvalidLink(const LinkEntry& link, std::unique_ptr<LinkEntryRepo>& linkEntryRepo)
 {
-	std::cout << "found error link: " << link.getUrl() << std::endl
+	std::cout << "found invalid link: " << link.getUrl() << std::endl
 			  << "from the website with < " << link.getWebsiteId() << " > id: " << std::endl;
 	linkEntryRepo->save(LinkEntry(link.getId(), link.getWebsiteId(),
 			link.getUrl(), LinkStatus::INVALID, time(nullptr)));
@@ -95,7 +95,7 @@ void crawlWebsite(const Website& website,
 
 int main()
 {
-	std::unique_ptr<WebsiteRepo> websiteRepo = std::make_unique<WebsiteRepoInMem>();
+	std::unique_ptr<WebsiteRepo> websiteRepo = std::make_unique<WebsiteRepoDb>("crawler", "localhost", "root", "pass", 3306);
 	std::unique_ptr<LinkEntryRepo> linkEntryRepo = std::make_unique<LinkEntryRepoInMem>();
 	std::unique_ptr<DocumentRepo> documentRepo = std::make_unique<DocumentRepoInMem>();
 

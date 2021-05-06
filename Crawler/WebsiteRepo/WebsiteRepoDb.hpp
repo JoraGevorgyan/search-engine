@@ -1,4 +1,3 @@
-/*
 //
 // Created by jora on 4/27/21.
 //
@@ -6,14 +5,24 @@
 #ifndef CRAWLER_WEBSITEREPODB_HPP
 #define CRAWLER_WEBSITEREPODB_HPP
 
+#include "mysql++/mysql++.h"
 #include "WebsiteRepo.hpp"
 
 class WebsiteRepoDb : public WebsiteRepo {
+private:
+	mysqlpp::Connection connection = false;
 public:
-	WebsiteRepoDb();
-	virtual std::vector<Website> getAll() override;
-	virtual void save(const Website& website) override;
+	WebsiteRepoDb(
+			const std::string& dbName, const std::string& server,
+			const std::string& user, const std::string& password, unsigned int port);
+	~WebsiteRepoDb() noexcept override;
+	std::vector<Website> getAll() override;
+	void save(const Website& website) override;
+
+private:
+	void connectionFailMsg(
+			const std::string& dbName, const std::string& server, const std::string& user,
+			const std::string& password, unsigned int port);
 };
 
 #endif //CRAWLER_WEBSITEREPODB_HPP
-*/
