@@ -23,6 +23,8 @@ private:
 	std::string startingUrl;
 	int error;
 
+	static constexpr int maxContentSize = 40000;
+
 public:
 	Parser(std::string html, std::string startingUrl);
 
@@ -52,7 +54,7 @@ private:
 	int extractTitle(GumboNode* node);
 	int extractDescription(GumboNode* node);
 	int extractContent(GumboNode* node);
-	[[nodiscard]] static std::string getHomeUrl(const std::string& url) ;
+	[[nodiscard]] static std::string getHomeUrl(const std::string& url);
 	[[nodiscard]] std::string addPath(const std::string& homeUrl, const std::string& path) const;
 };
 

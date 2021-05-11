@@ -9,11 +9,6 @@ std::vector<LinkEntry> LinkEntryRepoInMem::getAll()
 	return this->links;
 }
 
-size_t LinkEntryRepoInMem::getSize() const
-{
-	return this->links.size();
-}
-
 std::optional<LinkEntry> LinkEntryRepoInMem::getByUrl(const std::string& url)
 {
 	for (const auto& link : this->links) {

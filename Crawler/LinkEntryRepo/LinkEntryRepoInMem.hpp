@@ -14,7 +14,6 @@ private:
 
 public:
 	std::vector<LinkEntry> getAll() override;
-	[[nodiscard]] size_t getSize() const override;
 	std::optional<LinkEntry> getByUrl(const std::string& url) override;
 	std::vector<LinkEntry> getBy(int websiteId, LinkStatus status, int count) override;
 	void save(const LinkEntry& link) override;

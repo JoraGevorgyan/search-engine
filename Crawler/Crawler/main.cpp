@@ -13,6 +13,9 @@
 #include "DocumentRepoInMem.hpp"
 #include "DocumentRepoDb.hpp"
 
+int linkId = 1;
+int documentId = 1;
+
 void saveInvalidLink(const LinkEntry& link, std::unique_ptr<LinkEntryRepo>& linkEntryRepo)
 {
 	std::cout << "found invalid link: " << link.getUrl() << std::endl
@@ -30,7 +33,7 @@ void saveDocument(const std::string& url, const Parser& parser,
 				parser.getDescription(), parser.getContent(), time(nullptr)));
 		return;
 	}
-	documentRepo->save(Document((int)documentRepo->getSize(), url, parser.getTitle(),
+	documentRepo->save(Document(documentId++, url, parser.getTitle(),
 			parser.getDescription(), parser.getContent(), time(nullptr)));
 }
 
@@ -40,7 +43,7 @@ void saveLinks(const Parser& parser, const LinkEntry& link, std::unique_ptr<Link
 		if (linkEntryRepo->getByUrl(url).has_value()) {
 			continue;
 		}
-		linkEntryRepo->save(LinkEntry((int)linkEntryRepo->getSize(), link.getWebsiteId(),
+		linkEntryRepo->save(LinkEntry(linkId++, link.getWebsiteId(),
 				url, LinkStatus::WAITING, time(nullptr)));
 	}
 }
@@ -77,7 +80,7 @@ void crawlWebsite(const Website& website,
 				homepageOpt->getUrl(), LinkStatus::WAITING, time(nullptr)));
 	}
 	else {
-		linkEntryRepo->save(LinkEntry((int)linkEntryRepo->getSize(), website.getId(),
+		linkEntryRepo->save(LinkEntry(linkId++, website.getId(),
 				website.getHomepage(), LinkStatus::WAITING, time(nullptr)));
 	}
 
@@ -95,18 +98,37 @@ void crawlWebsite(const Website& website,
 
 int main()
 {
-	std::unique_ptr<WebsiteRepo> websiteRepo = std::make_unique<WebsiteRepoDb>("crawler", "localhost", "root", "pass", 3306);
-	std::unique_ptr<LinkEntryRepo> linkEntryRepo = std::make_unique<LinkEntryRepoInMem>();
-	std::unique_ptr<DocumentRepo> documentRepo = std::make_unique<DocumentRepoInMem>();
+	const std::string dbName = "crawler";
+	const std::string serverName = "localhost";
+	const std::string username = "root";
+	const std::string password = "pass";
+	const u_long port = 3306;
 
-	websiteRepo->save(Website(0, "cppreference.com", "https://en.cppreference.com/w/", time(nullptr)));
-	websiteRepo->save(Website(1, "cplusplus.com", "https://www.cplusplus.com/", time(nullptr)));
-	websiteRepo->save(Website(2, "bbc.com", "https://bbc.com/", time(nullptr)));
-	const auto& websites = websiteRepo->getAll();
-	for (const auto& website : websites) {
-		crawlWebsite(website, linkEntryRepo, documentRepo);
-		websiteRepo->save(Website(website.getId(), website.getDomain(), website.getHomepage(), time(nullptr)));
-		std::cout << "\tone website crawled: " << website.getDomain() << std::endl;
+	try {
+		std::unique_ptr<WebsiteRepo> websiteRepo =
+				std::make_unique<WebsiteRepoDb>(dbName, serverName, username, password, port);
+		std::unique_ptr<LinkEntryRepo> linkEntryRepo =
+				std::make_unique<LinkEntryRepoDb>(dbName, serverName, username, password, port);
+		std::unique_ptr<DocumentRepo> documentRepo =
+				std::make_unique<DocumentRepoDb>(dbName, serverName, username, password, port);
+		websiteRepo->save(Website(0, "cppreference.com", "https://en.cppreference.com/w/", time(nullptr)));
+		websiteRepo->save(Website(1, "cplusplus.com", "https://www.cplusplus.com/", time(nullptr)));
+		websiteRepo->save(Website(2, "bbc.com", "https://bbc.com/", time(nullptr)));
+		const auto& websites = websiteRepo->getAll();
+		for (const auto& website : websites) {
+			crawlWebsite(website, linkEntryRepo, documentRepo);
+			websiteRepo->save(Website(website.getId(), website.getDomain(), website.getHomepage(), time(nullptr)));
+			std::cout << "\tone website crawled: " << website.getDomain() << std::endl;
+		}
+	}
+	catch (const mysqlpp::ConnectionFailed& failed) {
+		std::cerr << failed.what() << std::endl;
+	}
+	catch (const mysqlpp::UseQueryError& failed) {
+		std::cerr << failed.what() << std::endl;
+	}
+	catch (const std::exception& except) {
+		std::cerr << except.what() << std::endl;
 	}
 	return 0;
 }
