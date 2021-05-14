@@ -1,0 +1,13 @@
+{
+  "database name": "database name",
+  "server name": "connection IPv4/IPv6 address or domain",
+  "username": "connection host name",
+  "password": "connection host password",
+  "port": 3306,
+  "websites to add": [
+    {
+      "domain": "geeksforgeeks.org",
+      "homepage url": "https://www.geeksforgeeks.org/"
+    }
+  ]
+}
