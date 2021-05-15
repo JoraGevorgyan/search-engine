@@ -1,0 +1,18 @@
+{
+  "database info": [
+    {
+      "database name": "crawler",
+      "server name": "localhost",
+      "username": "root",
+      "password": "pass",
+      "port": 3306
+    }
+  ],
+  "server info": [
+    {
+      "listening port": 7474,
+      "listening address": "INADDR_ANY"
+    }
+  ],
+  "maximal duration time(hours)": 4
+}
