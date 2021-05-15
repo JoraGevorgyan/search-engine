@@ -3,6 +3,7 @@
 //
 
 #include <filesystem>
+#include "RedirectFStream.hpp"
 #include "ConfigParser.hpp"
 #include "Crawler.hpp"
 
@@ -25,9 +26,12 @@ std::string getGivenFilePath(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
+	RedirectFStream redirectErr("errors.txt", stderr);
+	RedirectFStream redirectLog("logs.txt", stdout);
 	ConfigParser parser(getGivenFilePath(argc, argv));
 	crawler::start(
 			parser.getDbName(), parser.getServerName(), parser.getUsername(),
 			parser.getPassword(), parser.getPort(), parser.getWebsites());
+
 	return 0;
 }
