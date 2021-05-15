@@ -31,11 +31,12 @@ void ConfigParser::readFile(const std::string& path)
 void ConfigParser::parseArguments()
 {
 	try {
-		this->configs.at(DB_NAME).get_to(this->dbName);
-		this->configs.at(SERVER_NAME).get_to(this->serverName);
-		this->configs.at(USERNAME).get_to(this->username);
-		this->configs.at(PASSWORD).get_to(this->password);
-		this->configs.at(PORT).get_to(this->port);
+		auto dbInfo = this->configs.at(DB_INFO)[0];
+		dbInfo.at(DB_NAME).get_to(this->dbName);
+		dbInfo.at(SERVER_NAME).get_to(this->serverName);
+		dbInfo.at(USERNAME).get_to(this->username);
+		dbInfo.at(PASSWORD).get_to(this->password);
+		dbInfo.at(PORT).get_to(this->port);
 
 		for (auto current : this->configs.at(WEBSITES)) {
 			std::pair<std::string, std::string> website{};

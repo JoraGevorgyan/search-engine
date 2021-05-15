@@ -10,6 +10,7 @@
 #include <vector>
 #include "nlohmann/json.hpp"
 
+#define DB_INFO "database info"
 #define DB_NAME "database name"
 #define SERVER_NAME "server name"
 #define USERNAME "username"
