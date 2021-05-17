@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 	ConfigParser parser(getGivenFilePath(argc, argv));
 	const auto& serverInfo = parser.getServerInfo();
 	const auto& dbInfo = parser.getDbInfo();
-	Server server(serverInfo.lisAddr, serverInfo.port);
+	Server server(serverInfo.port);
 	Search search(dbInfo.name, dbInfo.server, dbInfo.username, dbInfo.password, dbInfo.port);
 
 	auto start = std::chrono::steady_clock::now();
