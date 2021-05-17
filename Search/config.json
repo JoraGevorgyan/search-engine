@@ -1,16 +1,16 @@
 {
   "database info": [
     {
-      "database name": "crawler",
-      "server name": "localhost",
-      "username": "root",
-      "password": "pass",
+      "database name": "database name",
+      "server name": "server name",
+      "username": "host username",
+      "password": "password",
       "port": 3306
     }
   ],
   "server info": [
     {
-      "listening port": 7474,
+      "listening port": 8080,
       "listening address": "INADDR_ANY"
     }
   ],
