@@ -14,6 +14,8 @@ Page PageLoader::load(const std::string& url)
 		curlpp::Cleanup cleaner;
 
 		request.setOpt(curlpp::Options::Url(url));
+		std::list<std::string> headers = {"Accept: text/html"};
+		request.setOpt(curlpp::Options::HttpHeader(headers));
 		// try to find correct location
 		request.setOpt(curlpp::Options::FollowLocation(true));
 
@@ -31,6 +33,10 @@ Page PageLoader::load(const std::string& url)
 		// write found effective url into effective url
 		curlpp::infos::EffectiveUrl::get(request, effUrl);
 
+		auto type = curlpp::infos::ContentType::get(request);
+		if (type.find("text/html") == std::string::npos) {
+			return Page(effUrl, "", 440);
+		}
 		return Page(effUrl, os.str(), curlpp::infos::ResponseCode::get(request));
 	}
 	catch (const curlpp::LibcurlRuntimeError& error) {

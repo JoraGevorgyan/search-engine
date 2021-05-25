@@ -10,15 +10,15 @@
 #include <vector>
 #include "nlohmann/json.hpp"
 
-#define DB_INFO "database info"
-#define DB_NAME "database name"
-#define SERVER_NAME "server name"
+#define DB_INFO "databaseInfo"
+#define DB_NAME "databaseName"
+#define SERVER_NAME "serverName"
 #define USERNAME "username"
 #define PASSWORD "password"
 #define PORT "port"
-#define WEBSITES "websites to add"
+#define WEBSITES "websitesToAdd"
 #define DOMAIN "domain"
-#define HOMEPAGE "homepage url"
+#define HOMEPAGE "homepageUrl"
 
 class ConfigParser {
 private:
