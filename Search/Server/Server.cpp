@@ -5,7 +5,6 @@
 #include "Server.hpp"
 
 Server::Server(unsigned long lisPort)
-		:gotMessage(false)
 {
 	this->createBindSocket(lisPort);
 	this->listen();
@@ -24,7 +23,7 @@ void Server::createBindSocket(unsigned long lisPort)
 	Server::checkSuccess(success, "Bind: done successfully.");
 }
 
-void Server::listen()
+[[noreturn]] void Server::listen()
 {
 	int success = ::listen(this->description, MAX_INPUT_SIZE);
 	Server::checkSuccess(success, "Server is ready to listen.");
@@ -34,7 +33,6 @@ void Server::listen()
 		unsigned addrSize = 0;
 		int clientDesc = accept(this->description, (sockaddr*)&clientAddr, &addrSize);
 		Server::checkSuccess(clientDesc, "Connected from '" + std::string(inet_ntoa(clientAddr.sin_addr)));
-		this->gotMessage = true;
 		char message[MAX_INPUT_SIZE];
 		memset(&message, '\0', MAX_INPUT_SIZE);
 
@@ -44,19 +42,11 @@ void Server::listen()
 			close(clientDesc);
 			continue;
 		}
-		return;
 		if (readSize > 0) {
-
+			this->requestContents.push(std::move(std::string(message)));
 		}
+		close(clientDesc);
 	}
-}
-
-Request Server::getRequest() const
-{
-	if (!this->gotMessage) {
-		return std::move(Request{ .got = false, .requiredOffer = {}, .requiredCount = {} });
-	}
-	return std::move(Request{ .got = false, .requiredOffer = {}, .requiredCount = {} });
 }
 
 void Server::sendAnswer(const SearchResult& results) const

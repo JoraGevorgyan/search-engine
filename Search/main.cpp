@@ -38,17 +38,10 @@ int main(int argc, char** argv)
 	Server server(serverInfo.port);
 	Search search(dbInfo.name, dbInfo.server, dbInfo.username, dbInfo.password, dbInfo.port);
 
-	auto start = std::chrono::steady_clock::now();
-	const long maxDurationTime = parser.getMaxDurationTime();
 	while (true) {
-		auto duration =
-				std::chrono::duration_cast<std::chrono::hours>(std::chrono::steady_clock::now() - start).count();
-		if (duration > maxDurationTime) {
-			break;
-		}
 		auto request = server.getRequest();
-		if (request.got) {
-			server.sendAnswer(search.find(request.requiredOffer, request.requiredCount));
+		if (request.gotContent()) {
+			server.sendAnswer(search.find(request.getRequiredOffer(), request.getRequiredCount()));
 		}
 	}
 	return 0;

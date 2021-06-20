@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <queue>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
@@ -19,17 +20,22 @@
 class Server {
 private:
 	int description{};
-	bool gotMessage;
+	std::queue<std::string> requestContents{};
 
 public:
 	explicit Server(unsigned long lisPort);
 	~Server();
-	[[nodiscard]] Request getRequest() const;
 	void sendAnswer(const SearchResult& results) const;
+	inline Request getRequest()
+	{
+		Request tmp(this->requestContents.front());
+		this->requestContents.pop();
+		return tmp;
+	}
 
 private:
 	void createBindSocket(unsigned long lisPort);
-	void listen();
+	[[noreturn]] void listen();
 	static inline void checkSuccess(int value, const std::string& logMessage)
 	{
 		if (value == -1) {
