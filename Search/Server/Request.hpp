@@ -13,16 +13,11 @@ using json = nlohmann::json;
 
 class Request {
 private:
-	bool got;
 	std::string requiredOffer;
 	int requiredCount;
 
 public:
 	explicit Request(const std::string& messageContent);
-	[[nodiscard]] inline bool gotContent() const
-	{
-		return this->got;
-	}
 	[[nodiscard]] inline const std::string& getRequiredOffer() const
 	{
 		return this->requiredOffer;

@@ -5,7 +5,7 @@
 #include "Request.hpp"
 
 Request::Request(const std::string& messageContent)
-		:got(messageContent.empty())
+		: got(messageContent.empty())
 {
 	try {
 		json content << messageContent;

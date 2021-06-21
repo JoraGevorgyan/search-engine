@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <filesystem>
-#include <chrono>
 #include "RedirectFStream.hpp"
 #include "ConfigParser.hpp"
 #include "Server.hpp"
@@ -12,7 +11,7 @@
 
 std::string getGivenFilePath(int argc, char** argv)
 {
-	if (argc != 2) {
+	if (argc!=2) {
 		std::cerr << "Wrong count of arguments!!\n";
 		std::cerr << "We only need the path of the configuration file!\n";
 		exit(1);
@@ -33,16 +32,12 @@ int main(int argc, char** argv)
 //	RedirectFStream redirectLog("logs.txt", stdout);
 
 	ConfigParser parser(getGivenFilePath(argc, argv));
-	const auto& serverInfo = parser.getServerInfo();
 	const auto& dbInfo = parser.getDbInfo();
-	Server server(serverInfo.port);
+	Server server(parser.getServerLisPort());
 	Search search(dbInfo.name, dbInfo.server, dbInfo.username, dbInfo.password, dbInfo.port);
 
 	while (true) {
 		auto request = server.getRequest();
-		if (request.gotContent()) {
-			server.sendAnswer(search.find(request.getRequiredOffer(), request.getRequiredCount()));
-		}
+		server.sendAnswer(search.find(request.getRequiredOffer(), request.getRequiredCount()));
 	}
-	return 0;
 }
