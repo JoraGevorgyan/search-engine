@@ -1,18 +1,16 @@
 {
-  "database info": [
+  "databaseInfo": [
     {
-      "database name": "database name",
-      "server name": "server name",
-      "username": "host username",
-      "password": "password",
-      "port": 3306
+      "databaseName": "database name",
+      "serverName": "connection IPv4/IPv6 address or domain",
+      "username": "connection host name",
+      "password": "connection host password",
+      "port": "database server listening port"
     }
   ],
-  "server info": [
+  "serverInfo": [
     {
-      "listening port": 8080,
-      "listening address": "INADDR_ANY"
+      "listeningPort": "server listening port"
     }
-  ],
-  "maximal duration time(hours)": 4
+  ]
 }
