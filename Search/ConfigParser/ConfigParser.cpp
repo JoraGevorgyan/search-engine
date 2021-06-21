@@ -22,9 +22,7 @@ void ConfigParser::readFile(const std::string& path)
 		file.close();
 	}
 	catch (nlohmann::detail::parse_error& err) {
-		std::cerr << "Check Your configuration file validation!!\n\n";
-		std::cerr << "Got an error: " << err.what() << "\n";
-		exit(1);
+		ConfigParser::showErr(err.what());
 	}
 }
 
@@ -39,19 +37,19 @@ void ConfigParser::parseArguments()
 		database.at(PORT).get_to(this->dbInfo.port);
 
 		auto server = this->configs.at(SERVER_INFO)[0];
-		server.at(LIS_ADDR).get_to(this->serverInfo.lisAddr);
-		server.at(LIS_PORT).get_to(this->serverInfo.port);
-
-		this->configs.at(MAX_DUR_TIME).get_to(this->maxDurTime);
+		server.at(LIS_PORT).get_to(this->serverLisPort);
 	}
 	catch (nlohmann::detail::out_of_range& err) {
-		std::cerr << "Check Your configuration file validation!!\n\n";
-		std::cerr << "Got an error: " << err.what() << "\n";
-		exit(1);
+		ConfigParser::showErr(err.what());
 	}
 	catch (nlohmann::detail::type_error& err) {
-		std::cerr << "Check Your configuration file validation!!\n\n";
-		std::cerr << "Got an error: " << err.what() << "\n";
-		exit(1);
+		ConfigParser::showErr(err.what());
 	}
+}
+
+void ConfigParser::showErr(const char* message)
+{
+	std::cerr << "Check Your configuration file validation!!\n\n";
+	std::cerr << "Got an error: " << message << "\n";
+	exit(1);
 }

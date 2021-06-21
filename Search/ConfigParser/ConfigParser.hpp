@@ -9,16 +9,15 @@
 #include <fstream>
 #include "nlohmann/json.hpp"
 
-#define DB_INFO "database info"
-#define DB_NAME "database name"
-#define SERVER_NAME "server name"
+#define DB_INFO "databaseInfo"
+#define DB_NAME "databaseName"
+#define SERVER_NAME "serverName"
 #define USERNAME "username"
 #define PASSWORD "password"
 #define PORT "port"
-#define SERVER_INFO "server info"
-#define LIS_ADDR "listening address"
-#define LIS_PORT "listening port"
-#define MAX_DUR_TIME "maximal duration time(hours)"
+
+#define SERVER_INFO "serverInfo"
+#define LIS_PORT "listeningPort"
 
 struct DatabaseInfo {
 	std::string name;
@@ -28,16 +27,10 @@ struct DatabaseInfo {
 	unsigned long port;
 };
 
-struct ServerInfo {
-	std::string lisAddr;
-	unsigned long port;
-};
-
 class ConfigParser {
 private:
 	DatabaseInfo dbInfo;
-	ServerInfo serverInfo;
-	long maxDurTime;
+    unsigned long serverLisPort;
 
 public:
 	explicit ConfigParser(const std::string& configFilePath);
@@ -45,18 +38,15 @@ public:
 	{
 		return this->dbInfo;
 	}
-	[[nodiscard]] inline const ServerInfo& getServerInfo() const
+	[[nodiscard]] inline const unsigned long& getServerLisPort() const
 	{
-		return this->serverInfo;
-	}
-	[[nodiscard]] inline long getMaxDurationTime() const
-	{
-		return this->maxDurTime;
+		return this->serverLisPort;
 	}
 
 private:
 	void readFile(const std::string& path);
 	void parseArguments();
+	static void showErr(const char* message);
 
 	nlohmann::json configs;
 };
