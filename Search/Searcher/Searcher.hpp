@@ -11,12 +11,12 @@
 
 using SearchResult = std::tuple<std::string, std::string, std::vector<std::string>>; /// url, title, found words
 
-class Search {
+class Searcher {
 private:
 	Database database;
 
 public:
-	Search(const std::string& dbName, const std::string& server, const std::string& username,
+	Searcher(const std::string& dbName, const std::string& server, const std::string& username,
 			const std::string& password, unsigned long port);
 
 	std::vector<SearchResult> find(const std::string& requiredOffer, int requiredCount);

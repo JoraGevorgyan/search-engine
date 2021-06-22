@@ -7,7 +7,7 @@
 #include "RedirectFStream.hpp"
 #include "ConfigParser.hpp"
 #include "Server.hpp"
-#include "Search.hpp"
+#include "Searcher.hpp"
 
 std::string getGivenFilePath(int argc, char** argv)
 {
@@ -34,10 +34,6 @@ int main(int argc, char** argv)
 	ConfigParser parser(getGivenFilePath(argc, argv));
 	const auto& dbInfo = parser.getDbInfo();
 	Server server(parser.getServerLisPort());
-	Search search(dbInfo.name, dbInfo.server, dbInfo.username, dbInfo.password, dbInfo.port);
-
-	while (true) {
-		auto request = server.getRequest();
-		server.sendAnswer(search.find(request.getRequiredOffer(), request.getRequiredCount()));
-	}
+	server.start(Searcher(dbInfo.name, dbInfo.server, dbInfo.username, dbInfo.password, dbInfo.port));
+	return 0;
 }
