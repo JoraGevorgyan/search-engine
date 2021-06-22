@@ -7,26 +7,24 @@
 
 #include <cpprest/http_listener.h>
 #include <cpprest/json.h>
-#include "Request.hpp"
-#include "Searcher.hpp"
+#include "Searcher/Searcher.hpp"
 
 using namespace web;
 using namespace web::http;
 using namespace web::http::experimental::listener;
 
-using Answer = std::tuple<std::string, std::string, std::vector<std::string>>; /// url, title, found words
-
 class Server {
 private:
-    http_listener listener;
-    Searcher searcher;
+	Searcher searcher;
+	http_listener listener;
 
 public:
-	explicit Server(unsigned long listeningPort = 4554);
+	explicit Server(const DatabaseInfo& dbInfo, unsigned long lisPort = 4554);
+	~Server();
 	void start();
 
 private:
-    void
+    void handleGet(const http_request& request);
 };
 
 #endif //SEARCH_SERVER_HPP
