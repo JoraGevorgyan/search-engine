@@ -3,3 +3,5 @@
 //
 
 #include "Searcher.hpp"
+
+Searcher::Searcher(const DatabaseInfo& dbInfo, int maxResultCount) { }

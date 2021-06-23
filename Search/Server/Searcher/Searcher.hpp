@@ -22,9 +22,9 @@ private:
     Database database;
 
 public:
-    Searcher(const DatabaseInfo& dbInfo);
+    Searcher(const DatabaseInfo& dbInfo, int maxResultCount);
 
-    std::vector<SearchResult> find(const std::string& requiredOffer, int requiredCount);
+    std::vector<SearchResult> find(const std::string& requiredOffer);
 
 };
 
