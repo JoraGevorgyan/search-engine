@@ -6,5 +6,6 @@ add_library(${BINARY}_server STATIC ${SOURCES})
 
 add_subdirectory(Searcher)
 
-target_link_libraries(${BINARY}_server ${BINARY}_server_searcher)
+find_package(cpprestsdk REQUIRED)
+target_link_libraries(${BINARY}_server cpprestsdk::cpprest ${BINARY}_server_searcher)
 
