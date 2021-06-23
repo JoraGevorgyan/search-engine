@@ -18,7 +18,9 @@ int main(int argc, char** argv)
 
         ConfigParser parser(getGivenFilePath(argc, argv));
         const auto& serverInfo = parser.getServerInfo();
-        Server server(parser.getDbInfo(), serverInfo.lisPort, serverInfo.maxResultCount);
+        const auto& dbInfo = parser.getDbInfo();
+        Server server(dbInfo.name, dbInfo.server, dbInfo.username, dbInfo.password, dbInfo.port,
+        		      serverInfo.lisPort, serverInfo.maxResultCount);
         server.start();
         return 0;
     }

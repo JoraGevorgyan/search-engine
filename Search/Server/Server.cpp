@@ -4,8 +4,10 @@
 
 #include "Server.hpp"
 
-Server::Server(const DatabaseInfo& dbInfo, unsigned long listeningPort, int maxResultCount)
-        : searcher{ Searcher(dbInfo, maxResultCount) }
+Server::Server(const std::string& dbName, const std::string& dbServer,
+               const std::string& dbUsername, const std::string& dbPassword,
+               const unsigned long& dbPort, unsigned long listeningPort, int maxResultCount)
+        : searcher{ Searcher(dbName, dbServer, dbUsername, dbPassword, dbPort, maxResultCount) }
 {
     utility::string_t address = U("http://*:") + std::to_string(listeningPort);
     uri_builder uri(address);

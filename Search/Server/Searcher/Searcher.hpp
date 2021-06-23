@@ -7,7 +7,7 @@
 
 #include <string>
 #include <vector>
-#include "Database/Database.hpp"
+#include "mysql++/mysql++.h"
 
 struct SearchResult {
     std::string url;
@@ -15,17 +15,17 @@ struct SearchResult {
     std::vector<std::string> foundWords;
 };
 
-struct DatabaseInfo;
-
 class Searcher {
 private:
-    Database database;
+    mysqlpp::Connection connection;
+    int maxResultCount;
 
 public:
-    Searcher(const DatabaseInfo& dbInfo, int maxResultCount);
-
+    Searcher(const std::string& DbName, const std::string& DbServer,
+            const std::string& DbUsername, const std::string& DbPassword,
+            const unsigned long& DbPort, int maxResultCount);
+    ~Searcher() noexcept;
     std::vector<SearchResult> find(const std::string& requiredOffer);
-
 };
 
 #endif //SEARCH_SEARCHER_HPP

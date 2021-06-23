@@ -19,8 +19,10 @@ private:
 	http_listener listener;
 
 public:
-	explicit Server(const DatabaseInfo& dbInfo, unsigned long listeningPort, int maxResultCount);
-	~Server();
+    explicit Server(const std::string& dbName, const std::string& dbServer,
+            const std::string& dbUsername, const std::string& dbPassword,
+            const unsigned long& dbPort, unsigned long listeningPort, int maxResultCount);
+    ~Server();
 	void start();
 
 private:
