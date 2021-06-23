@@ -17,7 +17,8 @@ int main(int argc, char** argv)
 //        RedirectFStream redirectLog("logs.txt", stdout);
 
         ConfigParser parser(getGivenFilePath(argc, argv));
-        Server server(parser.getDbInfo(), parser.getServerLisPort());
+        const auto& serverInfo = parser.getServerInfo();
+        Server server(parser.getDbInfo(), serverInfo.lisPort, serverInfo.maxResultCount);
         server.start();
         return 0;
     }

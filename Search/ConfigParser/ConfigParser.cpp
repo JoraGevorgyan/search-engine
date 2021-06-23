@@ -29,15 +29,16 @@ void ConfigParser::readFile(const std::string& path)
 void ConfigParser::parseArguments()
 {
 	try {
-		auto database = this->configs.at(DB_INFO)[0];
+		const auto database = this->configs.at(DB_INFO)[0];
 		database.at(DB_NAME).get_to(this->dbInfo.name);
 		database.at(SERVER_NAME).get_to(this->dbInfo.server);
 		database.at(USERNAME).get_to(this->dbInfo.username);
 		database.at(PASSWORD).get_to(this->dbInfo.password);
 		database.at(PORT).get_to(this->dbInfo.port);
 
-		auto server = this->configs.at(SERVER_INFO)[0];
-		server.at(LIS_PORT).get_to(this->serverLisPort);
+		const auto server = this->configs.at(SERVER_INFO)[0];
+		server.at(LIS_PORT).get_to(this->serverInfo.lisPort);
+		server.at(MAX_COUNT).get_to(this->serverInfo.maxResultCount);
 	}
 	catch (nlohmann::detail::out_of_range& err) {
 		ConfigParser::showErr(err.what());

@@ -10,7 +10,8 @@
   ],
   "serverInfo": [
     {
-      "listeningPort": "server listening port"
+      "listeningPort": "server listening port",
+      "maxResultCount": "maximum results count for searching" 
     }
   ]
 }

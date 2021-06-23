@@ -18,6 +18,7 @@
 
 #define SERVER_INFO "serverInfo"
 #define LIS_PORT "listeningPort"
+#define MAX_COUNT "maxResultCount"
 
 struct DatabaseInfo {
 	std::string name;
@@ -27,10 +28,15 @@ struct DatabaseInfo {
 	unsigned long port;
 };
 
+struct ServerInfo {
+    unsigned long lisPort;
+    int maxResultCount;
+};
+
 class ConfigParser {
 private:
-	DatabaseInfo dbInfo;
-    unsigned long serverLisPort;
+	DatabaseInfo dbInfo{};
+    ServerInfo serverInfo{};
 
 public:
 	explicit ConfigParser(const std::string& configFilePath);
@@ -38,9 +44,9 @@ public:
 	{
 		return this->dbInfo;
 	}
-	[[nodiscard]] inline const unsigned long& getServerLisPort() const
+	[[nodiscard]] inline const ServerInfo& getServerInfo() const
 	{
-		return this->serverLisPort;
+		return this->serverInfo;
 	}
 
 private:
