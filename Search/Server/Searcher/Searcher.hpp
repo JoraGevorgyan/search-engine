@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 #include "mysql++/mysql++.h"
 
 struct SearchResult {
@@ -26,6 +27,12 @@ public:
             const unsigned long& DbPort, int maxResultCount);
     ~Searcher() noexcept;
     std::vector<SearchResult> find(const std::string& requiredOffer);
+
+private:
+	static std::vector<std::string> divideByWords(const std::string& str);
+	void findAdd(std::vector<SearchResult>& results, const std::vector<std::string>& content);
+	static std::string to_string(const std::vector<std::string>& arr);
+	
 };
 
 #endif //SEARCH_SEARCHER_HPP

@@ -13,8 +13,8 @@ std::string getGivenFilePath(int argc, char** argv);
 int main(int argc, char** argv)
 {
     try {
-//        RedirectFStream redirectErr("errors.txt", stderr);
-//        RedirectFStream redirectLog("logs.txt", stdout);
+        RedirectFStream redirectErr("errors.txt", stderr);
+        RedirectFStream redirectLog("logs.txt", stdout);
 
         ConfigParser parser(getGivenFilePath(argc, argv));
         const auto& serverInfo = parser.getServerInfo();
