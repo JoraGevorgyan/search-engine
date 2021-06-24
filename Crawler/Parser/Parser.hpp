@@ -32,24 +32,29 @@ public:
 	{
 		return this->error != 0;
 	}
+
 	[[nodiscard]] inline const std::vector<std::string>& getUrls() const
 	{
 		return this->urls;
 	}
+
 	[[nodiscard]] inline const std::string& getTitle() const
 	{
 		return this->title;
 	}
+
 	[[nodiscard]] inline const std::string& getDescription() const
 	{
 		return this->description;
 	}
+
 	[[nodiscard]] inline const std::string& getContent() const
 	{
 		return this->content;
 	}
+
 private:
-	int parse();
+	void parse();
 	int extractUrls(GumboNode* node, const std::string& homeUrl);
 	int extractTitle(GumboNode* node);
 	int extractDescription(GumboNode* node);

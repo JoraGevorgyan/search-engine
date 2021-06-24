@@ -6,6 +6,7 @@
 
 LinkEntryRepoDb::LinkEntryRepoDb(const std::string& dbName, const std::string& serverName,
 		const std::string& username, const std::string& password, unsigned int port)
+		: connection(true)
 {
 	this->connection.connect(dbName.c_str(), serverName.c_str(), username.c_str(), password.c_str(), port);
 }

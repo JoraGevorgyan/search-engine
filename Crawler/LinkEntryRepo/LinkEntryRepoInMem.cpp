@@ -29,7 +29,7 @@ std::vector<LinkEntry> LinkEntryRepoInMem::getBy(int websiteId, LinkStatus statu
 	}
 	std::sort(validLinks.begin(), validLinks.end(),
 			[](const LinkEntry& link1, const LinkEntry& link2) -> bool {
-			  return link1.getUpdatedTime() < link2.getUpdatedTime();
+				return link1.getUpdatedTime() < link2.getUpdatedTime();
 			});
 	if (count < validLinks.size()) {
 		validLinks.erase(validLinks.begin() + count, validLinks.end());

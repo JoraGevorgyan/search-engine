@@ -10,7 +10,7 @@
 
 class DocumentRepoDb : public DocumentRepo {
 private:
-	mysqlpp::Connection connection = true;
+	mysqlpp::Connection connection;
 
 public:
 	DocumentRepoDb(

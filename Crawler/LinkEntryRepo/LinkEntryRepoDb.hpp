@@ -10,7 +10,7 @@
 
 class LinkEntryRepoDb : public LinkEntryRepo {
 private:
-	mysqlpp::Connection connection = false;
+	mysqlpp::Connection connection;
 
 public:
 	LinkEntryRepoDb(

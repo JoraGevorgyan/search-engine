@@ -14,20 +14,26 @@ private:
 	long status;
 
 public:
-	Page(std::string effUrl, std::string data, long status);
+	Page(std::string effUrl, std::string data, long status)
+			: effUrl{ std::move(effUrl) }, data{ std::move(data) }, status{ status }
+	{
+	}
 
 	[[nodiscard]] inline const std::string& getEffUrl() const
 	{
 		return this->effUrl;
 	}
+
 	[[nodiscard]] inline const std::string& getData() const
 	{
 		return this->data;
 	};
+
 	[[nodiscard]] inline long getStatus() const
 	{
 		return this->status;
 	}
+
 	[[nodiscard]] inline bool valid() const
 	{
 		return this->status >= 200 && this->status < 300;

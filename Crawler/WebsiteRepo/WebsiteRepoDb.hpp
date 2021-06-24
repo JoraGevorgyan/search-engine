@@ -10,7 +10,7 @@
 
 class WebsiteRepoDb : public WebsiteRepo {
 private:
-	mysqlpp::Connection connection = false;
+	mysqlpp::Connection connection;
 
 public:
 	WebsiteRepoDb(

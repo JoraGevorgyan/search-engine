@@ -30,14 +30,12 @@ namespace crawler {
 	{
 		auto documentOpt = documentRepo->getByUrl(url);
 		if (documentOpt.has_value()) {
-			documentRepo->save(
-					Document(documentOpt->getId(), url, parser.getTitle(),
-							parser.getDescription(), parser.getContent(), time(nullptr)));
+			documentRepo->save(Document(documentOpt->getId(), url, parser.getTitle(),
+					parser.getDescription(), parser.getContent(), time(nullptr)));
 		}
 		else {
-			documentRepo->save(
-					Document(documentId++, url, parser.getTitle(),
-							parser.getDescription(), parser.getContent(), time(nullptr)));
+			documentRepo->save(Document(documentId++, url, parser.getTitle(),
+					parser.getDescription(), parser.getContent(), time(nullptr)));
 		}
 		std::cout << "The document was saved successfully, its corresponding URL is shown below.\n" << url << std::endl;
 	}
@@ -68,9 +66,8 @@ namespace crawler {
 			saveInvalidLink(link, linkEntryRepo);
 			return;
 		}
-		linkEntryRepo->save(
-				LinkEntry(link.getId(), link.getWebsiteId(),
-						link.getUrl(), LinkStatus::LOADED, time(nullptr)));
+		linkEntryRepo->save(LinkEntry(link.getId(), link.getWebsiteId(),
+				link.getUrl(), LinkStatus::LOADED, time(nullptr)));
 		std::cout << "The link was crawled successfully, its corresponding URL is shown below.\n"
 				  << link.getUrl() << std::endl;
 
@@ -84,20 +81,19 @@ namespace crawler {
 	{
 		auto homepageOpt = linkEntryRepo->getByUrl(website.getHomepage());
 		if (homepageOpt.has_value()) {
-			linkEntryRepo->save(
-					LinkEntry(homepageOpt->getId(), homepageOpt->getWebsiteId(),
-							homepageOpt->getUrl(), LinkStatus::WAITING, time(nullptr)));
+			linkEntryRepo->save(LinkEntry(homepageOpt->getId(), homepageOpt->getWebsiteId(),
+					homepageOpt->getUrl(), LinkStatus::WAITING, time(nullptr)));
 		}
 		else {
-			linkEntryRepo->save(
-					LinkEntry(linkId++, website.getId(),
-							website.getHomepage(), LinkStatus::WAITING, time(nullptr)));
+			linkEntryRepo->save(LinkEntry(linkId++, website.getId(),
+					website.getHomepage(), LinkStatus::WAITING, time(nullptr)));
 		}
 
 		while (true) {
 			constexpr int expectedLinksCount = 144;
 			auto links = linkEntryRepo->getBy(website.getId(), LinkStatus::WAITING, expectedLinksCount);
 			if (links.empty()) {
+				std::cout << "There's no more links for crawling, please update database for continue." << std::endl;
 				break;
 			}
 			for (const auto& link : links) {
@@ -131,12 +127,7 @@ namespace crawler {
 			}
 		}
 		catch (const mysqlpp::ConnectionFailed& failed) {
-			std::cerr << "Please check your database validation, the current parameters are set as:\n"
-					  << "database name:\t\"" << dbName << "\"\n"
-					  << "server name:  \t\"" << serverName << "\"\n"
-					  << "username:     \t\"" << username << "\"\n"
-					  << "password:     \t\"" << password << "\"\n"
-					  << "port:         \t\"" << port << "\"\n" << std::endl;
+			std::cerr << "Please check your database validation, see parameters in config file" << std::endl;
 			std::cerr << failed.what() << std::endl;
 		}
 		catch (const mysqlpp::UseQueryError& failed) {

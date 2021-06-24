@@ -14,7 +14,7 @@ Page PageLoader::load(const std::string& url)
 		curlpp::Cleanup cleaner;
 
 		request.setOpt(curlpp::Options::Url(url));
-		std::list<std::string> headers = {"Accept: text/html"};
+		std::list<std::string> headers = { "Accept: text/html" };
 		request.setOpt(curlpp::Options::HttpHeader(headers));
 		// try to find correct location
 		request.setOpt(curlpp::Options::FollowLocation(true));

@@ -5,43 +5,33 @@
 #include "Parser.hpp"
 
 Parser::Parser(std::string html, std::string startingUrl)
-		:html{ std::move(html) }, startingUrl{ std::move(startingUrl) }
+		: html{ std::move(html) }, startingUrl{ std::move(startingUrl) }
 {
-	this->error = this->parse();
-
+	this->parse();
 }
 
-int Parser::parse()
+void Parser::parse()
 {
 	GumboOutput* output = gumbo_parse(html.c_str());
 	if (output == nullptr) {
-		return errno;
+		exit(errno);
 	}
 
 	std::string homeUrl = Parser::getHomeUrl(this->startingUrl);
-	int err = this->extractUrls(output->root, homeUrl);
-	if (err != 0) {
-		return err;
+	if (this->error == 0) {
+		this->error = this->extractUrls(output->root, homeUrl);
 	}
-
-	err = this->extractTitle(output->root);
-	if (err != 0) {
-		return err;
+	if (this->error == 0) {
+		this->error = this->extractTitle(output->root);
 	}
-
-	err = this->extractDescription(output->root);
-	if (err != 0) {
-		return err;
+	if (this->error == 0) {
+		this->error = this->extractDescription(output->root);
 	}
-
-	err = this->extractContent(output->root);
-	if (err != 0) {
-		return err;
+	if (this->error == 0) {
+		this->error = this->extractContent(output->root);
 	}
-
 	// clean up
 	gumbo_destroy_output(&kGumboDefaultOptions, output);
-	return 0;
 }
 
 int Parser::extractUrls(GumboNode* node, const std::string& homeUrl)
