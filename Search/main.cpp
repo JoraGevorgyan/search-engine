@@ -27,6 +27,13 @@ int main(int argc, char** argv)
 		std::cout << "Server: stop listening!" << std::endl;
 		return 0;
 	}
+	catch (const mysqlpp::ConnectionFailed& failed) {
+		std::cerr << "Please check your database validation, see parameters in config file" << std::endl;
+		std::cerr << failed.what() << std::endl;
+	}
+	catch (const mysqlpp::UseQueryError& failed) {
+		std::cerr <<" Got an error: " << failed.what() << std::endl;
+	}
 	catch (const std::exception& err) {
 		std::cerr << "Got an error: " << err.what() << std::endl;
 	}
