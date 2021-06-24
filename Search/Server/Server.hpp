@@ -21,7 +21,7 @@ private:
 public:
     explicit Server(const std::string& dbName, const std::string& dbServer,
             const std::string& dbUsername, const std::string& dbPassword,
-            const unsigned long& dbPort, unsigned long listeningPort, unsigned maxResultCount);
+            const unsigned long& dbPort, unsigned long listeningPort, size_t maxResultCount);
     ~Server();
 	void start();
 

@@ -30,7 +30,7 @@ struct DatabaseInfo {
 
 struct ServerInfo {
     unsigned long lisPort;
-    unsigned maxResultCount;
+	size_t maxResultCount;
 };
 
 class ConfigParser {
