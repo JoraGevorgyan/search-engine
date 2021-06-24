@@ -34,6 +34,7 @@ std::vector<SearchResult> Searcher::find(const std::string& requiredOffer)
 
 std::map<std::string, SearchResult> Searcher::find(const std::string& content, const std::string& rowName)
 {
+	std::cout << "Searcher: start searching for '" << content << "' in " << rowName << "row" << std::endl;
 	mysqlpp::Query query(&this->connection);
 	std::string pureContent{};
 	query.escape_string(&pureContent, content.c_str());
@@ -46,6 +47,12 @@ std::map<std::string, SearchResult> Searcher::find(const std::string& content, c
 		const std::string url = row["url"].data();
 		results.insert(
 				std::pair<std::string, SearchResult>(url, { url, row["title"].data(), row["description"].data() }));
+	}
+	if (results.empty()) {
+		std::cout << "Searcher: there's no result" << std::endl;
+	}
+	else {
+		std::cout << "Searcher: found some results" << std::endl;
 	}
 	return results;
 }

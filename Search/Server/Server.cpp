@@ -31,12 +31,16 @@ void Server::start()
 
 void Server::handleGet(const http_request& request)
 {
+	std::cout << "Server: got a request of GET type." << std::endl;
     const auto requiredOffer = request.to_string();
     const auto result = this->searcher.find(requiredOffer);
     if (result.empty()) {
-        request.reply(status_codes::NoContent);
+	    std::cout << "Server: reply to client with NO content" << std::endl;
+	    request.reply(status_codes::NoContent);
         return;
     }
+    std::cout << "Server: found some results for required offer" << std::endl;;
+    std::cout << "Server: reply to client" << std::endl;
     request.reply(status_codes::OK, Server::makeJson(result));
 }
 

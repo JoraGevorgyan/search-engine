@@ -13,6 +13,7 @@ ConfigParser::ConfigParser(const std::string& configFilePath)
 void ConfigParser::readFile(const std::string& path)
 {
 	try {
+		std::cout << "Config parser: start reading from '" << path << "' file." << std::endl;
 		std::ifstream file(path);
 		if (!file.is_open()) {
 			std::cerr << "Can't open file: " << path << std::endl;
@@ -29,6 +30,7 @@ void ConfigParser::readFile(const std::string& path)
 void ConfigParser::parseArguments()
 {
 	try {
+		std::cout << "Config parser: start parsing arguments" << std::endl;
 		const auto database = this->configs.at(DB_INFO)[0];
 		database.at(DB_NAME).get_to(this->dbInfo.name);
 		database.at(SERVER_NAME).get_to(this->dbInfo.server);
