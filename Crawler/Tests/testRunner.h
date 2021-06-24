@@ -1,11 +1,14 @@
 //
-// Created by jora on 3/24/21.
+// Created by jora on 6/24/21.
 //
+
+#ifndef CRAWLER_TESTRUNNER_H
+#define CRAWLER_TESTRUNNER_H
 
 #include <string>
 #include <fstream>
-#include <gtest/gtest.h>
-#include "Parser.hpp"
+#include "gtest/gtest.h"
+
 
 std::string readFile(const std::string& path)
 {
@@ -22,9 +25,11 @@ std::string readFile(const std::string& path)
 	file.close();
 	return result;
 }
-TEST(parsingTest, test1)
+
+int run(int argc, char** argv)
 {
-	const std::string html = readFile("../parserTest.html");
-	Parser parser(html, "https://example.am/");
-	EXPECT_EQ(parser.invalid(), true);
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }
+
+#endif //CRAWLER_TESTRUNNER_H
