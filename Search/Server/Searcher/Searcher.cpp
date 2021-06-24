@@ -5,11 +5,11 @@
 #include "Searcher.hpp"
 
 Searcher::Searcher(const std::string& dbName, const std::string& dbServer,
-                   const std::string& dbUsername, const std::string& dbPassword,
-                   const unsigned long& dbPort, size_t maxResultCount)
-        : connection(true), maxResultCount(maxResultCount)
+		const std::string& dbUsername, const std::string& dbPassword,
+		const unsigned long& dbPort, size_t maxResultCount)
+		: connection(true), maxResultCount(maxResultCount)
 {
-    this->connection.connect(dbName.c_str(), dbServer.c_str(), dbUsername.c_str(), dbPassword.c_str(), dbPort);
+	this->connection.connect(dbName.c_str(), dbServer.c_str(), dbUsername.c_str(), dbPassword.c_str(), dbPort);
 }
 
 Searcher::~Searcher() noexcept
@@ -41,7 +41,7 @@ std::map<std::string, SearchResult> Searcher::find(const std::string& content, c
 	const std::string& command = "SELECT * FROM documents WHERE MATCH (" + rowName + ") AGAINST ('"
 			+ pureContent + "' IN NATURAL MODE)";
 	auto queryResult = query.use(command.c_str());
-	
+
 	std::map<std::string, SearchResult> results{};
 	while (mysqlpp::Row row = queryResult.fetch_row()) {
 		const std::string url = row["url"].data();
@@ -76,7 +76,7 @@ std::vector<SearchResult> Searcher::toVector(const std::map<std::pair<int, std::
 	auto srcBegin = source.begin();
 	auto destBegin = result.begin();
 	auto destEnd = result.end();
-	
+
 	while (destBegin != destEnd) {
 		*destBegin = srcBegin->second;
 		++destBegin;

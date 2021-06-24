@@ -14,11 +14,12 @@ private:
 
 public:
 	RedirectFStream(const std::string& newFilePath, std::FILE* stream);
+
 	~RedirectFStream();
 };
 
 RedirectFStream::RedirectFStream(const std::string& newFilePath, std::FILE* stream)
-		:stream(stream)
+		: stream(stream)
 {
 	bool success = std::freopen(newFilePath.c_str(), "w", stream);
 	if (!success) {

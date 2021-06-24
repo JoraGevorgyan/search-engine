@@ -29,21 +29,23 @@ struct DatabaseInfo {
 };
 
 struct ServerInfo {
-    unsigned long lisPort;
+	unsigned long lisPort;
 	size_t maxResultCount;
 };
 
 class ConfigParser {
 private:
 	DatabaseInfo dbInfo{};
-    ServerInfo serverInfo{};
+	ServerInfo serverInfo{};
 
 public:
 	explicit ConfigParser(const std::string& configFilePath);
+
 	[[nodiscard]] inline const DatabaseInfo& getDbInfo() const
 	{
 		return this->dbInfo;
 	}
+
 	[[nodiscard]] inline const ServerInfo& getServerInfo() const
 	{
 		return this->serverInfo;
