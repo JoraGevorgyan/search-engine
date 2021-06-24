@@ -11,14 +11,6 @@ add_subdirectory(LinkEntryRepo)
 add_subdirectory(WebsiteRepo)
 add_subdirectory(DocumentRepo)
 
-# install crawler_run and crawler_test in bin directory
-install(TARGETS crawler_run DESTINATION bin)
-
-# change default install path if user has not set any directory
-if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX "../" CACHE PATH "default install path" FORCE)
-endif ()
-
 #set commands for checking program components
 set(CHECK_LOADER_COMMAND make crawler_loader && ${CMAKE_CXX_COMPILER} ${CMAKE_HOME_DIRECTORY}/Tests/checkLoader.cc)
 set(CHECK_PARSER_COMMAND make crawler_parser && ${CMAKE_CXX_COMPILER} ${CMAKE_HOME_DIRECTORY}/Tests/checkParser.cc)
