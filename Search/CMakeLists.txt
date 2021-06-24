@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
-project(Search)
+project(search)
 
 set(BINARY ${CMAKE_PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 17)
