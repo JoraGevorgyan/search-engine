@@ -6,7 +6,7 @@
 
 Server::Server(const std::string& dbName, const std::string& dbServer,
                const std::string& dbUsername, const std::string& dbPassword,
-               const unsigned long& dbPort, unsigned long listeningPort, int maxResultCount)
+               const unsigned long& dbPort, unsigned long listeningPort, size_t maxResultCount)
         : searcher{ Searcher(dbName, dbServer, dbUsername, dbPassword, dbPort, maxResultCount) }
 {
     utility::string_t address = U("http://*:") + std::to_string(listeningPort);
@@ -48,12 +48,7 @@ json::value Server::makeJson(const std::vector<SearchResult>& results)
         const auto& tmp = results[i];
         arr[i]["url"] = json::value::string(tmp.url);
         arr[i]["title"] = json::value::string(tmp.title);
-
-        std::vector<json::value> words(tmp.foundWords.size());
-        for (int j = 0; j < words.size(); ++j) {
-            words[j] = json::value::string(tmp.foundWords[j]);
-        }
-        arr[i]["foundWords"] = json::value::array(words);
+        arr[i]["description"] = json::value::string(tmp.description);
     }
     return json::value::array(arr);
 }

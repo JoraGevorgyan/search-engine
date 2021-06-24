@@ -6,7 +6,7 @@
 
 Searcher::Searcher(const std::string& dbName, const std::string& dbServer,
                    const std::string& dbUsername, const std::string& dbPassword,
-                   const unsigned long& dbPort, int maxResultCount)
+                   const unsigned long& dbPort, size_t maxResultCount)
         : connection(true), maxResultCount(maxResultCount)
 {
     this->connection.connect(dbName.c_str(), dbServer.c_str(), dbUsername.c_str(), dbPassword.c_str(), dbPort);
@@ -21,44 +21,59 @@ Searcher::~Searcher() noexcept
 
 std::vector<SearchResult> Searcher::find(const std::string& requiredOffer)
 {
-	std::vector<SearchResult> result{};
-	auto words = Searcher::divideByWords(requiredOffer);
-	while (!words.empty() && this->maxResultCount < result.size()) {
-		std::sort(words.begin(), words.end());
-		do {
-			this->findAdd(result, words);
-		}
-		while (std::next_permutation(words.begin(), words.end()) && this->maxResultCount < result.size());
-		words.pop_back();
-	}
-	return result;
+	std::map<std::pair<int, std::string>, SearchResult> results{};
+	int keyValue = 0;
+	const auto foundInTitle = this->find(requiredOffer, "title");
+	this->add(results, foundInTitle, ++keyValue);
+	const auto foundInDesc = this->find(requiredOffer, "description");
+	this->add(results, foundInTitle, ++keyValue);
+	const auto foundInContent = this->find(requiredOffer, "content");
+	this->add(results, foundInTitle, ++keyValue);
+	return Searcher::toVector(results);
 }
 
-std::vector<std::string> Searcher::divideByWords(const std::string& str)
-{
-	std::vector<std::string> result{};
-	
-	for (int i = 0; i < str.size(); ++i) {
-		std::string tmp{};
-		while (str[i] != ' ') {
-			tmp += str[i++];
-		}
-		result.push_back(tmp);
-	}
-	return result;
-}
-
-void Searcher::findAdd(std::vector<SearchResult>& results, const std::vector<std::string>& content)
+std::map<std::string, SearchResult> Searcher::find(const std::string& content, const std::string& rowName)
 {
 	mysqlpp::Query query(&this->connection);
-	auto result = query.use("SELECT * FROM documents WHERE  ");
+	std::string pureContent{};
+	query.escape_string(&pureContent, content.c_str());
+	const std::string& command = "SELECT * FROM documents WHERE MATCH (" + rowName + ") AGAINST ('"
+			+ pureContent + "' IN NATURAL MODE)";
+	auto queryResult = query.use(command.c_str());
+	
+	std::map<std::string, SearchResult> results{};
+	while (mysqlpp::Row row = queryResult.fetch_row()) {
+		const std::string url = row["url"].data();
+		results.insert(
+				std::pair<std::string, SearchResult>(url, { url, row["title"].data(), row["description"].data() }));
+	}
+	return results;
 }
 
-std::string Searcher::to_string(const std::vector<std::string>& arr)
+void Searcher::add(std::map<std::pair<int, std::string>, SearchResult>& container,
+		const std::map<std::string, SearchResult>& results, int keyValue) const
 {
-	std::string str{};
-	for (const auto& tmp : arr) {
-		str += tmp + ' ';
+	if (container.size() >= this->maxResultCount) {
+		return;
 	}
-	return str;
+	for (const auto& tmp : results) {
+		container.insert(
+				std::pair<std::pair<int, std::string>, SearchResult>(std::make_pair(keyValue, tmp.first), tmp.second));
+	}
+}
+
+std::vector<SearchResult> Searcher::toVector(const std::map<std::pair<int, std::string>, SearchResult>& source) const
+{
+	const size_t size = std::min(source.size(), this->maxResultCount);
+	std::vector<SearchResult> result(size);
+	auto srcBegin = source.begin();
+	auto destBegin = result.begin();
+	auto destEnd = result.end();
+	
+	while (destBegin != destEnd) {
+		*destBegin = srcBegin->second;
+		++destBegin;
+		++srcBegin;
+	}
+	return result;
 }

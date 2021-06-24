@@ -13,26 +13,26 @@
 struct SearchResult {
     std::string url;
     std::string title;
-    std::vector<std::string> foundWords;
+    std::string description;
 };
 
 class Searcher {
 private:
     mysqlpp::Connection connection;
-    int maxResultCount;
+	size_t maxResultCount;
 
 public:
     Searcher(const std::string& DbName, const std::string& DbServer,
             const std::string& DbUsername, const std::string& DbPassword,
-            const unsigned long& DbPort, int maxResultCount);
+            const unsigned long& DbPort, size_t maxResultCount);
     ~Searcher() noexcept;
     std::vector<SearchResult> find(const std::string& requiredOffer);
 
 private:
-	static std::vector<std::string> divideByWords(const std::string& str);
-	void findAdd(std::vector<SearchResult>& results, const std::vector<std::string>& content);
-	static std::string to_string(const std::vector<std::string>& arr);
-	
+	std::map<std::string, SearchResult> find(const std::string& content, const std::string& rowName);
+	void add(std::map<std::pair<int, std::string>, SearchResult>& container,
+			 const std::map<std::string, SearchResult>& results, int keyValue) const;
+	std::vector<SearchResult> toVector(const std::map<std::pair<int, std::string>, SearchResult>& source) const;
 };
 
 #endif //SEARCH_SEARCHER_HPP
