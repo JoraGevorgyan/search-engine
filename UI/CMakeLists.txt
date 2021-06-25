@@ -10,6 +10,7 @@ add_subdirectory(UI)
 
 include_directories(UI)
 
+find_package(cpprestsdk REQUIRED)
 target_link_libraries(${BINARY}_run PUBLIC
-                      ${BINARY}_ui)
+                      ${BINARY}_ui cpprestsdk::cpprest)
 

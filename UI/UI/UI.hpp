@@ -9,13 +9,12 @@
 #include <cpprest/json.h>
 
 namespace ui {
-using namespace web;
 
 class UI {
 public:
     virtual ~UI() = default;
     virtual void showMsg(const std::string& msg, bool err = false) = 0;
-    virtual void showSearchResult(const json::value& result) = 0;
+    virtual void showSearchResult(const web::json::value& result) = 0;
     virtual std::string ask(const std::string& question) = 0;
     virtual std::string askForSearch() = 0;
 };
