@@ -2,7 +2,23 @@
 // Created by jora on 6/24/21.
 //
 
-#ifndef CLI_UI_HPP
-#define CLI_UI_HPP
+#ifndef UI_UI_HPP
+#define UI_UI_HPP
 
-#endif //CLI_UI_HPP
+#include <string>
+#include <cpprest/json.h>
+
+namespace ui {
+using namespace web;
+
+class UI {
+public:
+    virtual ~UI() = default;
+    virtual void showMsg(const std::string& msg, bool err = false) = 0;
+    virtual void showSearchResult(const json::value& result) = 0;
+    virtual std::string ask(const std::string& question) = 0;
+    virtual std::string askForSearch() = 0;
+};
+} // namespace ui
+
+#endif //UI_UI_HPP
