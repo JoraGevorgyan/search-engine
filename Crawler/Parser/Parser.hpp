@@ -14,14 +14,14 @@
 
 class Parser {
 private:
+	std::string html;
+	std::string startingUrl;
+	int error;
+
 	std::vector<std::string> urls;
 	std::string title;
 	std::string description;
 	std::string content;
-
-	std::string html;
-	std::string startingUrl;
-	int error;
 
 	static constexpr int maxContentSize = 40000;
 

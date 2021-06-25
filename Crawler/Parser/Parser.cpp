@@ -5,7 +5,7 @@
 #include "Parser.hpp"
 
 Parser::Parser(std::string html, std::string startingUrl)
-		: html{ std::move(html) }, startingUrl{ std::move(startingUrl) }
+		: html{ std::move(html) }, startingUrl{ std::move(startingUrl) }, error{ 0 }
 {
 	this->parse();
 }
