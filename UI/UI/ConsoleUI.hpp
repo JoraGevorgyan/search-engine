@@ -10,10 +10,10 @@
 namespace ui {
 
 class ConsoleUI : public UI {
-    void showMsg(const std::string& msg, bool err = false) override;
-    void showSearchResult(const web::json::value& result) override;
-    std::string ask(const std::string& question) override;
-    std::string askForSearch() override;
+    void showMsg(const std::string& msg, bool err = false) const override;
+    void showSearchResult(const web::json::value& result) const override;
+    std::string ask(const std::string& question) const override;
+    std::string askForSearch() const override;
 };
 } // namespace ui
 

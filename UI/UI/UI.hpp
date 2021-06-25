@@ -13,10 +13,10 @@ namespace ui {
 class UI {
 public:
     virtual ~UI() = default;
-    virtual void showMsg(const std::string& msg, bool err = false) = 0;
-    virtual void showSearchResult(const web::json::value& result) = 0;
-    virtual std::string ask(const std::string& question) = 0;
-    virtual std::string askForSearch() = 0;
+    virtual void showMsg(const std::string& msg, bool err = false) const = 0;
+    virtual void showSearchResult(const web::json::value& result) const = 0;
+    virtual std::string ask(const std::string& question) const = 0;
+    virtual std::string askForSearch() const = 0;
 };
 } // namespace ui
 
