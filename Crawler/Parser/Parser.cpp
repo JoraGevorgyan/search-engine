@@ -17,8 +17,13 @@ void Parser::parse()
 		this->error = errno;
 		return;
 	}
-	std::string homeUrl = Parser::getHomeUrl(this->startingUrl);
-	this->error = this->extractUrls(output->root, homeUrl);
+	const auto homeUrl = Parser::getHomeUrl(this->startingUrl);
+	if (!homeUrl.first) {
+		std::cerr << "Parser: effective url was invalid ... can't find domain name" << std::endl;
+		this->error = -1;
+		return;
+	}
+	this->error = this->extractUrls(output->root, homeUrl.second);
 	if (this->error == 0) {
 		this->error = this->extractTitle(output->root);
 	}
@@ -54,18 +59,24 @@ int Parser::extractUrls(GumboNode* node, const std::string& homeUrl)
 		return -1;
 	}
 	std::string curUrl = std::string(href->value);
-	std::string curHomeUrl = Parser::getHomeUrl(curUrl);
-
-	// skip if is out of current webiste or started at '#'
-	if (!curHomeUrl.empty() && curHomeUrl != homeUrl || curUrl.front() == '#' || curUrl.empty()) {
+	const auto curHomeUrl = Parser::getHomeUrl(curUrl);
+	if (curUrl.empty() || !curHomeUrl.first) {
+		return -1;
+	}
+	// skip if it's out of current website or started at '#'
+	const bool equals = curHomeUrl.second != homeUrl;
+	if (equals || curUrl.front() == '#') {
 		return 0;
 	}
-
-	if (curHomeUrl == homeUrl) {
-		this->urls.push_back(curUrl);
+	if (!equals) {
+		const auto toAdd = this->addPath(homeUrl, curUrl);
+		if (!toAdd.first) {
+			return -1;
+		}
+		this->urls.push_back(toAdd.second);
 	}
 	else {
-		this->urls.push_back(this->addPath(homeUrl, curUrl));
+		this->urls.push_back(curUrl);
 	}
 	return 0;
 }
@@ -91,7 +102,7 @@ int Parser::extractTitle(GumboNode* node)
 	return 0;
 }
 
-std::string Parser::getHomeUrl(const std::string& url)
+std::pair<bool, std::string> Parser::getHomeUrl(const std::string& url)
 {
 	size_t breakIndex = 1;
 	for (size_t i = 1; i < url.size(); ++i, ++breakIndex) {
@@ -100,23 +111,22 @@ std::string Parser::getHomeUrl(const std::string& url)
 		}
 	}
 	if (breakIndex == 1) {
-		return std::string("");
+		return std::make_pair(false, "");
 	}
 	++breakIndex;
 	while (breakIndex < url.size() && url[breakIndex] != '/') {
 		++breakIndex;
 	}
-
-	return std::string(url, 0, breakIndex);
+	return std::make_pair(true, std::string(url, 0, breakIndex));
 }
 
-std::string Parser::addPath(const std::string& homeUrl, const std::string& path) const
+std::pair<bool, std::string> Parser::addPath(const std::string& homeUrl, const std::string& path) const
 {
 	if (path.empty()) {
-		return std::string("");
+		return std::make_pair(false, "");
 	}
 	if (path.front() == '/') {
-		return homeUrl + path;
+		return std::make_pair(true, homeUrl + path);
 	}
 	// erase last part from starting url for getting current page url and add path on it
 	unsigned index = 0;
@@ -125,13 +135,14 @@ std::string Parser::addPath(const std::string& homeUrl, const std::string& path)
 			break;
 		}
 	}
-	// starting url was error
+	// starting url was invalid
 	if (index == 0) {
-		std::cerr << "Parser: effective url was error ... can't find domain name" << std::endl;
+		std::cerr << "Parser: effective url was invalid ... can't find domain name" << std::endl;
+		return std::make_pair(false, "");
 	}
 	auto it = this->startingUrl.begin();
 	std::string currentPage(it, it + index + 1);
-	return currentPage + path;
+	return std::make_pair(true, currentPage + path);
 }
 
 int Parser::extractDescription(GumboNode* node)

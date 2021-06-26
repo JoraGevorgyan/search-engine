@@ -59,8 +59,8 @@ private:
 	int extractTitle(GumboNode* node);
 	int extractDescription(GumboNode* node);
 	int extractContent(GumboNode* node);
-	[[nodiscard]] static std::string getHomeUrl(const std::string& url);
-	[[nodiscard]] std::string addPath(const std::string& homeUrl, const std::string& path) const;
+	[[nodiscard]] static std::pair<bool, std::string> getHomeUrl(const std::string& url);
+	[[nodiscard]] std::pair<bool, std::string> addPath(const std::string& homeUrl, const std::string& path) const;
 };
 
 #endif //CRAWLER_PARSER_HPP
