@@ -8,13 +8,17 @@
 #include <string>
 #include <fstream>
 #include "gtest/gtest.h"
+#include "../PageLoader/PageLoader.hpp"
+#include "../Parser/Parser.hpp"
 
+#define TEST_DIR
 
 std::string readFile(const std::string& path)
 {
 	std::string result;
 	std::ifstream file(path);
 	if (!file.is_open()) {
+		std::cerr << "Can't open file!!" << std::endl;
 		return result;
 	}
 	std::string current;
@@ -26,8 +30,7 @@ std::string readFile(const std::string& path)
 	return result;
 }
 
-int run(int argc, char** argv)
-{
+int run(int argc, char** argv) {
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
