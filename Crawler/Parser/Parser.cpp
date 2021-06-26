@@ -40,7 +40,7 @@ void Parser::parse()
 int Parser::extractUrls(GumboNode* node, const std::string& homeUrl)
 {
 	if (node->type != GUMBO_NODE_ELEMENT) {
-		return -1;
+		return 0;
 	}
 
 	if (node->v.element.tag != GUMBO_TAG_A) {
@@ -56,12 +56,14 @@ int Parser::extractUrls(GumboNode* node, const std::string& homeUrl)
 
 	GumboAttribute* href = gumbo_get_attribute(&node->v.element.attributes, "href");
 	if (href == nullptr || href->value == nullptr) {
+		std::cerr << "There's an invalid href in html!" << std::endl;
 		return -1;
 	}
 	std::string curUrl = std::string(href->value);
 	const auto curHomeUrl = Parser::getHomeUrl(curUrl);
 	if (curUrl.empty() || !curHomeUrl.first) {
-		return -1;
+		std::cout << "There's an empty url!" << std::endl;
+		return 0;
 	}
 	// skip if it's out of current website or started at '#'
 	const bool equals = curHomeUrl.second != homeUrl;
@@ -84,7 +86,7 @@ int Parser::extractUrls(GumboNode* node, const std::string& homeUrl)
 int Parser::extractTitle(GumboNode* node)
 {
 	if (node->type != GUMBO_NODE_ELEMENT) {
-		return -1;
+		return 0;
 	}
 	GumboVector* children = &node->v.element.children;
 
@@ -148,7 +150,7 @@ std::pair<bool, std::string> Parser::addPath(const std::string& homeUrl, const s
 int Parser::extractDescription(GumboNode* node)
 {
 	if (node->type != GUMBO_NODE_ELEMENT) {
-		return -1;
+		return 0;
 	}
 	// if is not a meta tag, than search it in others
 	if (node->v.element.tag != GUMBO_TAG_META) {
