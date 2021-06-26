@@ -41,7 +41,10 @@ int Parser::extractUrls(GumboNode* node, const std::string& homeUrl)
 	if (node->v.element.tag != GUMBO_TAG_A) {
 		GumboVector* children = &node->v.element.children;
 		for (size_t i = 0; i < children->length; ++i) {
-			this->extractUrls(static_cast<GumboNode*>(children->data[i]), homeUrl);
+			int err = this->extractUrls(static_cast<GumboNode*>(children->data[i]), homeUrl);
+			if (err != 0) {
+				return err;
+			}
 		}
 		return 0;
 	}
@@ -80,7 +83,10 @@ int Parser::extractTitle(GumboNode* node)
 	}
 
 	for (size_t i = 0; i < children->length; ++i) {
-		this->extractTitle(static_cast<GumboNode*>(children->data[i]));
+		int err = this->extractTitle(static_cast<GumboNode*>(children->data[i]));
+		if (err != 0) {
+			return err;
+		}
 	}
 	return 0;
 }
@@ -137,7 +143,10 @@ int Parser::extractDescription(GumboNode* node)
 	if (node->v.element.tag != GUMBO_TAG_META) {
 		GumboVector* children = &node->v.element.children;
 		for (size_t i = 0; i < children->length; ++i) {
-			this->extractDescription(static_cast<GumboNode*>(children->data[i]));
+			int err = this->extractDescription(static_cast<GumboNode*>(children->data[i]));
+			if (err != 0) {
+				return err;
+			}
 		}
 	}
 	// if the tag type is meta, than take from it description  and return
