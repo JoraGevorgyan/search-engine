@@ -14,13 +14,11 @@ void Parser::parse()
 {
 	GumboOutput* output = gumbo_parse(html.c_str());
 	if (output == nullptr) {
-		exit(errno);
+		this->error = errno;
+		return;
 	}
-
 	std::string homeUrl = Parser::getHomeUrl(this->startingUrl);
-	if (this->error == 0) {
-		this->error = this->extractUrls(output->root, homeUrl);
-	}
+	this->error = this->extractUrls(output->root, homeUrl);
 	if (this->error == 0) {
 		this->error = this->extractTitle(output->root);
 	}
