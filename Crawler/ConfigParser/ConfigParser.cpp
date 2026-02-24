@@ -56,3 +56,4 @@ void ConfigParser::parseArguments()
 		exit(1);
 	}
 }
+
